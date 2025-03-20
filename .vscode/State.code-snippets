@@ -1,0 +1,21 @@
+{
+	"State Template": {
+	"prefix": "State",
+	"body": [
+        "void ${1:$TM_FILENAME_BASE}::initializeState_${2:ActorState}()",
+		"{",
+		"    ",
+		"}",
+        "",
+        "void ${1:$TM_FILENAME_BASE}::executeState_${2:ActorState}()",
+		"{",
+		"    ",
+		"}",
+        "",
+        "void ${1:$TM_FILENAME_BASE}::finalizeState_${2:ActorState}() { }",
+        "",
+        "",
+	],
+	"description": "Creates code for a state"
+}
+}

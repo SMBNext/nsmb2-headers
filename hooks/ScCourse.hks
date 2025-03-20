@@ -1,0 +1,5 @@
+ScCourse_alloc_size:
+    type:   branch
+    link:   false
+    addr:   0x0055AB54
+    func:   ScCourse_alloc_size_hook

@@ -1,0 +1,5 @@
+StaticInit:
+    type:   branch
+    link:   true
+    func:   static_init
+    addr:   0x00100014

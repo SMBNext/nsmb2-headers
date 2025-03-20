@@ -1,0 +1,201 @@
+InitProfileTablePtrs:
+    type:   branch
+    link:   false
+    addr:   0x00101800
+    func:   InitProfileTablePtrs()
+
+
+# This one shouldn't be needed anymore as we redirect all reads
+NumProfiles2:
+    type:   patch
+    addr:   0x005872C4
+    data:   D901
+
+NumProfiles2_Substitute_1:
+    type:   branch
+    link:   true
+    addr:   0x002E36D8
+    func:   NumProfiles2R0
+
+NumProfiles2_Substitute_2:
+    type:   branch
+    link:   true
+    addr:   0x002E3784
+    func:   NumProfiles2R0
+
+NumProfiles2_Substitute_3:
+    type:   branch
+    link:   true
+    addr:   0x002E3FD4
+    func:   NumProfiles2R0
+
+NumProfiles2_Substitute_4:
+    type:   branch
+    link:   true
+    addr:   0x002E4068
+    func:   NumProfiles2R0
+
+NumProfiles2_Substitute_5:
+    type:   branch
+    link:   true
+    addr:   0x002E4500
+    func:   NumProfiles2R8
+
+NumProfiles2_Substitute_6:
+    type:   branch
+    link:   true
+    addr:   0x004576F8
+    func:   NumProfiles2R0
+
+NumProfiles2_Substitute_7:
+    type:   branch
+    link:   true
+    addr:   0x00457778
+    func:   NumProfiles2R0
+
+
+ResourceMgr_TableSubstitute_1:
+    type:   branch
+    link:   true
+    addr:   0x002E36F8
+    func:   ProfileResTableR0
+
+ResourceMgr_TableSubstitute_2:
+    type:   branch
+    link:   true
+    addr:   0x002E37F8
+    func:   ProfileResTableR0
+
+ResourceMgr_TableSubstitute_3:
+    type:   branch
+    link:   true
+    addr:   0x002E3DE8
+    func:   ProfileResTableR2
+
+ResourceMgr_TableSubstitute_4:
+    type:   branch
+    link:   true
+    addr:   0x002E3FE8
+    func:   ProfileResTableR0
+
+ResourceMgr_TableSubstitute_5:
+    type:   branch
+    link:   true
+    addr:   0x002E40E4
+    func:   ProfileResTableR0
+
+ResourceMgr_TableSubstitute_6:
+    type:   branch
+    link:   true
+    addr:   0x002E4510
+    func:   ProfileResTableR9
+
+
+ProfileSoundActorKinds:
+    type:   branch
+    link:   true
+    addr:   0x00213654
+    func:   ProfileSoundActorKindsR7
+
+
+ActorInfo_TableSubstitute_1:
+    type:   branch
+    link:   true
+    addr:   0x0025106C
+    func:   ActorInfosR1
+
+ActorInfo_TableSubstitute_2:
+    type:   branch
+    link:   true
+    addr:   0x002513FC
+    func:   ActorInfosR1
+
+ActorInfo_TableSubstitute_3:
+    type:   branch
+    link:   true
+    addr:   0x0025156C
+    func:   ActorInfosR10
+
+ActorInfo_TableSubstitute_4:
+    type:   branch
+    link:   true
+    addr:   0x002516B4
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_5:
+    type:   branch
+    link:   true
+    addr:   0x00251818
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_6:
+    type:   branch
+    link:   true
+    addr:   0x002E2E30
+    func:   ActorInfosR11
+
+ActorInfo_TableSubstitute_7:
+    type:   branch
+    link:   true
+    addr:   0x002E31C0
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_8:
+    type:   branch
+    link:   true
+    addr:   0x002E9884
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_9:
+    type:   branch
+    link:   true
+    addr:   0x003032B4
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_10:
+    type:   branch
+    link:   true
+    addr:   0x00303454
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_11:
+    type:   branch
+    link:   true
+    addr:   0x00303B38
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_12:
+    type:   branch
+    link:   false
+    addr:   0x00403780
+    func:   ActorInfosR2S
+
+ActorInfo_TableSubstitute_13:
+    type:   branch
+    link:   true
+    addr:   0x004039E0
+    func:   ActorInfosR2
+
+ActorInfo_TableSubstitute_14:
+    type:   branch
+    link:   true
+    addr:   0x00403F84
+    func:   ActorInfosR1
+
+ActorInfo_TableSubstitute_15:
+    type:   branch
+    link:   true
+    addr:   0x00404050
+    func:   ActorInfosR4
+
+ActorInfo_TableSubstitute_16:
+    type:   branch
+    link:   true
+    addr:   0x00404178
+    func:   ActorInfosR0
+
+ActorInfo_TableSubstitute_17:
+    type:   branch
+    link:   true
+    addr:   0x00404240
+    func:   ActorInfosR0

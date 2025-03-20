@@ -1,0 +1,12 @@
+{
+	"Model Create Template": {
+	"prefix": "ModelCreate",
+	"body": [
+		"allocator.link(ActorHeap);",
+		"",
+		"Resource* resource = ResourceMgr::instance->getResource(\"model\");",
+		"model = Model::create(resource, \"model\", &allocator);",
+	],
+	"description": "Creates a model"
+}
+}

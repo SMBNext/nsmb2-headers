@@ -1,0 +1,39 @@
+{
+    "files.associations": {
+        "*.s": "arm",
+        "*.tcc": "cpp",
+        "exception": "cpp",
+        "locale": "cpp",
+        "ostream": "cpp",
+        "*.inc": "cpp",
+        "qtcoredepends": "cpp",
+        "qtdbusdepends": "cpp",
+        "*.def": "cpp",
+        "cmath": "cpp",
+        "ios": "cpp",
+        "any": "cpp",
+        "bit": "cpp",
+        "charconv": "cpp",
+        "codecvt": "cpp",
+        "compare": "cpp",
+        "condition_variable": "cpp",
+        "cstddef": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "optional": "cpp",
+        "rope": "cpp",
+        "future": "cpp",
+        "limits": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "ranges": "cpp",
+        "functional": "cpp",
+        "regex": "cpp",
+        "numeric": "cpp"
+    },
+
+    "C_Cpp.default.compilerArgs": [
+        "-nostdinc"
+    ]
+}

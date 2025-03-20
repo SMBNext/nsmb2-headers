@@ -1,0 +1,54 @@
+CourseSpriteMgr_spriteToProfileIds_1:
+    type:   branch
+    link:   true
+    addr:   0x002E29B0
+    func:   CourseSpriteMgr_spriteToProfileIds_r1
+
+CourseSpriteMgr_spriteToProfileIds_2:
+    type:   branch
+    link:   true
+    addr:   0x002E2E2C
+    func:   CourseSpriteMgr_spriteToProfileIds_r10
+
+CourseSpriteMgr_spriteToProfileIds_3:
+    type:   branch
+    link:   true
+    addr:   0x002E3104
+    func:   CourseSpriteMgr_spriteToProfileIds_r11
+
+CourseSpriteMgr_spriteToProfileIds_4:
+    type:   branch
+    link:   true
+    addr:   0x002E37F4
+    func:   CourseSpriteMgr_spriteToProfileIds_r1
+
+CourseSpriteMgr_spriteToProfileIds_5:
+    type:   branch
+    link:   true
+    addr:   0x002E3DE4
+    func:   CourseSpriteMgr_spriteToProfileIds_r3
+
+CourseSpriteMgr_spriteToProfileIds_6:
+    type:   branch
+    link:   true
+    addr:   0x002E40E0
+    func:   CourseSpriteMgr_spriteToProfileIds_r1
+
+
+CourseSpriteMgr_spriteCount_1:
+    type:   branch
+    link:   true
+    addr:   0x002E2E24
+    func:   CourseSpriteMgr_spriteCount_r9
+
+CourseSpriteMgr_spriteCount_2:
+    type:   branch
+    link:   true
+    addr:   0x002E3100
+    func:   CourseSpriteMgr_spriteCount_r9
+
+CourseSpriteMgr_spriteCount_3:
+    type:   branch
+    link:   true
+    addr:   0x002E3D8C
+    func:   CourseSpriteMgr_spriteCount_r9

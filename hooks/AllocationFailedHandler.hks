@@ -1,0 +1,5 @@
+RegisterAllocationFailedHandler:
+    type:   branch
+    link:   true
+    addr:   0x00101020
+    func:   AllocationFailedHandler::registerCallback()

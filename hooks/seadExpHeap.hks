@@ -1,0 +1,9 @@
+seadExpHeapGetSize:
+    type:   symptr
+    addr:   0x005D2F98
+    sym:    sead::ExpHeap::getSize() const
+
+seadExpHeapGetFreeSize:
+    type:   symptr
+    addr:   0x005D2F9C
+    sym:    sead::ExpHeap::getFreeSize() const
