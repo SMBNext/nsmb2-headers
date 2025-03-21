@@ -30,6 +30,12 @@ A **RegisterStageProfile** global object must also be correctly specified within
 
 The symbol table will also only work with the USA Gold Edition of New Super Mario Bros. 2.
 
+Make sure the checksums of your dumped files match with the below checksums:
+| File | #MD5    | #SHA1    |
+| :---:   | :---: | :---: |
+| code.bin | `bff3eaf503b16b9b3d3c98a4494d1149`   | `dec76696e3cd7ccdd29a637d51d255517a4daf1d`   |
+| exheader.bin | `ee62b6025525d0da21093ff611e3161b`   | `344aab8c1f71f5b58b1a3607470756d0d58a337e`   |
+
 1) Compile (or download) [Magikoopa](https://github.com/RicBent/Magikoopa).
 2) Clone this repository.
 3) Download a standalone version of the [GNU Arm Embedded Toolchain](https://developer.arm.com/downloads/-/gnu-rm), and unzip it inside this repository. You should have a `gcc-arm-none-eabi` folder next to the `source`, `loader`, etc. folders.
