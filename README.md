@@ -26,7 +26,9 @@ A **RegisterStageProfile** global object must also be correctly specified within
 
 # Compiling
 
-⚠️ NOTE: Compiling at the moment only works on Linux/[WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (and maybe macOS). ⚠️
+⚠️ **NOTE**: Compiling at the moment only works on Linux/[WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (and maybe macOS). ⚠️
+
+⚠️ **NOTE**: If using WSL, ensure you perform the following actions **inside your WSL home directory (`~/`)** to prevent case sensitivity issues. Avoid working in `/mnt/c/` or other mounted Windows drives, as NTFS is case-insensitive by default and may cause build errors. ⚠️
 
 The symbol table will also only work with the USA Gold Edition of New Super Mario Bros. 2.
 
