@@ -10,65 +10,67 @@ class ActorBase;
 class ActorCollisionCheck     // size: 0xB8
 {
 public:
-    typedef bool (*HitCallback)(ActorCollisionCheck* self, ActorCollisionCheck* other);
+    typedef void (*HitCallback)(ActorCollisionCheck* self, ActorCollisionCheck* other);
 
-    enum Shape : u8
+    enum ShapeType : u8
     {
-        SHAPE_BOX               = 0,
-        SHAPE_CIRCLE            = 1,
-        SHAPE_TRAPEZOID_UD      = 2,
-        SHAPE_TRAPEZOID_LR      = 3,
+        SHAPE_TYPE_BOX               = 0,
+        SHAPE_TYPE_CIRCLE            = 1,
+        SHAPE_TYPE_TRAPEZOID_UD      = 2,
+        SHAPE_TYPE_TRAPEZOID_LR      = 3,
     };
 
-    enum Type : u8
+    // The kind of actor this is
+    enum Kind : u8
     {
-        TYPE_GENERIC            = 0x0,
-        TYPE_PLAYER             = 0x1,
-        TYPE_UNK_2              = 0x2,      // this is Yoshi in NSMBU
-        TYPE_ENEMY              = 0x3,
-        TYPE_BALLOON            = 0x4,      // used for bubbles
-        TYPE_COLLECTIBLE        = 0x5,
-        TYPE_PROJECTILE         = 0x6,      // fireballs, hammers, etc.
-        TYPE_BULLET             = 0x7,      // used for bullet bills (and cannonballs in NSMBU)
-        TYPE_GOAL_POLE          = 0x8,
-        TYPE_UNK_9              = 0x9,      // this is Baby Yoshi in NSMBU
+        KIND_PLAYER                    = 0x0,
+        KIND_PLAYER_ATTACK             = 0x1,
+        KIND_UNK_2                     = 0x2,      // this is Yoshi in NSMBU
+        KIND_ENEMY                     = 0x3,
+        KIND_BALLOON                   = 0x4,      // used for bubbles
+        KIND_COLLECTIBLE               = 0x5,      // items, star coins, etc.
+        KIND_PROJECTILE                = 0x6,      // fireballs, hammers, etc.
+        KIND_BULLET                    = 0x7,      // used for bullet bills (and cannonballs in NSMBU)
+        KIND_GOAL_POLE                 = 0x8,
+        KIND_UNK_9                     = 0x9,      // this is Baby Yoshi in NSMBU
     };
 
-    enum TypeMask : u32
+    // The kinds of actors that this actor is allowed to interact with
+    enum TargetKind : u32
     {
-        TYPE_MASK_GENERIC       = 1u << TYPE_GENERIC,
-        TYPE_MASK_PLAYER        = 1u << TYPE_PLAYER,
-        TYPE_MASK_UNK_2         = 1u << TYPE_UNK_2,         // this is Yoshi in NSMBU
-        TYPE_MASK_ENEMY         = 1u << TYPE_ENEMY,
-        TYPE_MASK_BALLOON       = 1u << TYPE_BALLOON,       // used for bubbles
-        TYPE_MASK_COLLECTIBLE   = 1u << TYPE_COLLECTIBLE,
-        TYPE_MASK_PROJECTILE    = 1u << TYPE_PROJECTILE,    // fireballs, hammers, etc.
-        TYPE_MASK_BULLET        = 1u << TYPE_BULLET,        // used for bullet bills (and cannonballs in NSMBU)
-        TYPE_MASK_GOAL_POLE     = 1u << TYPE_GOAL_POLE,
-        TYPE_MASK_UNK_9         = 1u << TYPE_UNK_9,         // this is Baby Yoshi in NSMBU
+        TARGET_KIND_NONE                 = 0,
+        TARGET_KIND_PLAYER               = 1u << KIND_PLAYER,
+        TARGET_KIND_PLAYER_ATTACK        = 1u << KIND_PLAYER_ATTACK,
+        TARGET_KIND_UNK_2                = 1u << KIND_UNK_2,         // this is Yoshi in NSMBU
+        TARGET_KIND_ENEMY                = 1u << KIND_ENEMY,
+        TARGET_KIND_BALLOON              = 1u << KIND_BALLOON,       // used for bubbles
+        TARGET_KIND_COLLECTIBLE          = 1u << KIND_COLLECTIBLE,
+        TARGET_KIND_PROJECTILE           = 1u << KIND_PROJECTILE,    // fireballs, hammers, etc.
+        TARGET_KIND_BULLET               = 1u << KIND_BULLET,        // used for bullet bills (and cannonballs in NSMBU)
+        TARGET_KIND_GOAL_POLE            = 1u << KIND_GOAL_POLE,
+        TARGET_KIND_UNK_9                = 1u << KIND_UNK_9,         // this is Baby Yoshi in NSMBU
 
 
         // A preset suitable for most enemies (Goombas, Koopas, etc.)
-        TYPE_MASK_PRESET_ENEMY      = TYPE_MASK_GENERIC | TYPE_MASK_PLAYER      | TYPE_MASK_UNK_2      |
-                                      TYPE_MASK_ENEMY   | TYPE_MASK_COLLECTIBLE | TYPE_MASK_PROJECTILE |
-                                      TYPE_MASK_UNK_9,
+        TARGET_KIND_PRESET_ENEMY      = TARGET_KIND_PLAYER         | TARGET_KIND_PLAYER_ATTACK | TARGET_KIND_UNK_2      |
+                                        TARGET_KIND_ENEMY          | TARGET_KIND_COLLECTIBLE   | TARGET_KIND_PROJECTILE |
+                                        TARGET_KIND_UNK_9,
 
         // A preset suitable for bullet-like actors (Cannonballs, Bullet Bills, etc.)
-        TYPE_MASK_PRESET_BULLET     = TYPE_MASK_GENERIC | TYPE_MASK_PLAYER     | TYPE_MASK_UNK_2  |
-                                      TYPE_MASK_ENEMY   | TYPE_MASK_PROJECTILE | TYPE_MASK_BULLET,
+        TARGET_KIND_PRESET_BULLET     = TARGET_KIND_PLAYER         | TARGET_KIND_PLAYER_ATTACK | TARGET_KIND_UNK_2  |
+                                        TARGET_KIND_ENEMY          | TARGET_KIND_PROJECTILE    | TARGET_KIND_BULLET,
 
         // A preset suitable for most map_obj actors
-        TYPE_MASK_PRESET_MAP_OBJ    = TYPE_MASK_GENERIC | TYPE_MASK_PLAYER | TYPE_MASK_ENEMY |
-                                      TYPE_MASK_PROJECTILE,
+        TARGET_KIND_PRESET_MAP_OBJ    = TARGET_KIND_PLAYER | TARGET_KIND_PLAYER_ATTACK | TARGET_KIND_PROJECTILE,
 
         // A preset suitable for player-related checking only
-        TYPE_MASK_PRESET_PLAYER     = TYPE_MASK_GENERIC | TYPE_MASK_PLAYER,
+        TARGET_KIND_PRESET_PLAYER     = TARGET_KIND_PLAYER | TARGET_KIND_PLAYER_ATTACK,
     };
 
-
+    // The type of attack that the actor will perform
     enum Attack : u8
     {
-        ATTACK_GENERIC          = 0x0,
+        ATTACK_NONE             = 0x0,
         ATTACK_FIRE             = 0x1,
         ATTACK_STAR_MEGA        = 0x2,
         ATTACK_SIDE             = 0x3,
@@ -86,59 +88,71 @@ public:
         ATTACK_CANNON           = 0xF,
     };
 
-    enum AttackMask : u32
+    // The types of attacks that the actor will take damage from
+    enum DamageFrom : u32
     {
-        ATTACK_MASK_GENERIC           = 1u << ATTACK_GENERIC,
-        ATTACK_MASK_FIRE              = 1u << ATTACK_FIRE,
-        ATTACK_MASK_STAR_MEGA         = 1u << ATTACK_STAR_MEGA,
-        ATTACK_MASK_SIDE              = 1u << ATTACK_SIDE,
-        ATTACK_MASK_SLIDE             = 1u << ATTACK_SLIDE,
-        ATTACK_MASK_KOOPA_FIRE        = 1u << ATTACK_KOOPA_FIRE,
-        ATTACK_MASK_GROUND_POUND      = 1u << ATTACK_GROUND_POUND,
-        ATTACK_MASK_FENCE_PUNCH       = 1u << ATTACK_FENCE_PUNCH,
-        ATTACK_MASK_SHELL             = 1u << ATTACK_SHELL,
-        ATTACK_MASK_TAIL              = 1u << ATTACK_TAIL,
-        ATTACK_MASK_UNK_10            = 1u << ATTACK_UNK_10,
-        ATTACK_MASK_UNK_11            = 1u << ATTACK_UNK_11,
-        ATTACK_MASK_UNK_12            = 1u << ATTACK_UNK_12,
-        ATTACK_MASK_UNK_13            = 1u << ATTACK_UNK_13,
-        ATTACK_MASK_EXPLOSION         = 1u << ATTACK_EXPLOSION,
-        ATTACK_MASK_CANNON            = 1u << ATTACK_CANNON,
+        DAMAGE_FROM_NONE              = 0,
+        DAMAGE_FROM_FIRE              = 1u << ATTACK_FIRE,
+        DAMAGE_FROM_STAR_MEGA         = 1u << ATTACK_STAR_MEGA,
+        DAMAGE_FROM_SIDE              = 1u << ATTACK_SIDE,
+        DAMAGE_FROM_SLIDE             = 1u << ATTACK_SLIDE,
+        DAMAGE_FROM_KOOPA_FIRE        = 1u << ATTACK_KOOPA_FIRE,
+        DAMAGE_FROM_GROUND_POUND      = 1u << ATTACK_GROUND_POUND,
+        DAMAGE_FROM_FENCE_PUNCH       = 1u << ATTACK_FENCE_PUNCH,
+        DAMAGE_FROM_SHELL             = 1u << ATTACK_SHELL,
+        DAMAGE_FROM_TAIL              = 1u << ATTACK_TAIL,
+        DAMAGE_FROM_UNK_10            = 1u << ATTACK_UNK_10,
+        DAMAGE_FROM_UNK_11            = 1u << ATTACK_UNK_11,
+        DAMAGE_FROM_UNK_12            = 1u << ATTACK_UNK_12,
+        DAMAGE_FROM_UNK_13            = 1u << ATTACK_UNK_13,
+        DAMAGE_FROM_EXPLOSION         = 1u << ATTACK_EXPLOSION,
+        DAMAGE_FROM_CANNON            = 1u << ATTACK_CANNON,
 
-        // Convenience presets
         // Allows all used attacks; useful for "simple" enemies (Goombas, Koopas, etc.)
-        ATTACK_MASK_PRESET_ALL      = ATTACK_MASK_GENERIC     | ATTACK_MASK_FIRE   | ATTACK_MASK_STAR_MEGA    |
-                                      ATTACK_MASK_SIDE        | ATTACK_MASK_SLIDE  | ATTACK_MASK_GROUND_POUND |
-                                      ATTACK_MASK_FENCE_PUNCH | ATTACK_MASK_SHELL  | ATTACK_MASK_TAIL         | 
-                                      ATTACK_MASK_EXPLOSION   | ATTACK_MASK_CANNON,
+        DAMAGE_FROM_PRESET_ALL      = DAMAGE_FROM_FIRE   | DAMAGE_FROM_STAR_MEGA    |
+                                      DAMAGE_FROM_SIDE   | DAMAGE_FROM_SLIDE       |
+                                      DAMAGE_FROM_GROUND_POUND | DAMAGE_FROM_FENCE_PUNCH |
+                                      DAMAGE_FROM_SHELL  | DAMAGE_FROM_TAIL        |
+                                      DAMAGE_FROM_EXPLOSION | DAMAGE_FROM_CANNON,
 
         // For "bullet-like" actors (Cannonball, Bullet Bill, etc.)
-        ATTACK_MASK_PRESET_BULLET   = ATTACK_MASK_GENERIC      | ATTACK_MASK_STAR_MEGA | ATTACK_MASK_SIDE      |
-                                      ATTACK_MASK_GROUND_POUND | ATTACK_MASK_SHELL     | ATTACK_MASK_TAIL      |
-                                      ATTACK_MASK_EXPLOSION    | ATTACK_MASK_CANNON    | ATTACK_MASK_FIRE      |
-                                      ATTACK_MASK_SLIDE,
+        DAMAGE_FROM_PRESET_BULLET   = DAMAGE_FROM_STAR_MEGA | DAMAGE_FROM_SIDE      |
+                                      DAMAGE_FROM_GROUND_POUND | DAMAGE_FROM_SHELL |
+                                      DAMAGE_FROM_TAIL      | DAMAGE_FROM_EXPLOSION |
+                                      DAMAGE_FROM_CANNON    | DAMAGE_FROM_FIRE     |
+                                      DAMAGE_FROM_SLIDE,
 
         // For "big" actors (Big Boo, Giant Urchin, etc.)
-        ATTACK_MASK_PRESET_BIG      = ATTACK_MASK_GENERIC | ATTACK_MASK_STAR_MEGA | ATTACK_MASK_EXPLOSION,
+        DAMAGE_FROM_PRESET_BIG      = DAMAGE_FROM_NONE | DAMAGE_FROM_STAR_MEGA | DAMAGE_FROM_EXPLOSION,
     };
 
-    enum Flag : u32
+    enum Status : u32
     {
-        FLAG_UNK_0      = 0x1,
-        FLAG_PASSIVE    = 0x4,
+        STATUS_NONE                     = 0,
+        STATUS_NO_REVISION              = 1 << 0,
+        STATUS_NO_SAME_ACTOR            = 1 << 1,
+        STATUS_NO_PASS_INFO             = 1 << 2,   // If set, this instance will not interact with other instances
+        STATUS_NO_SAME_ACTOR_GROUP      = 1 << 3,
+        STATUS_NO_CHECK_LIMIT           = 1 << 4,
+
+        STATUS_FIRE_KILL                = 1 << 7,   // If set, this actor will kill
+        STATUS_SLIDE_KILL               = 1 << 8,   // If set, this actor will kill objects such as shells
+
+        STATUS_FORCE_GET_REVISION       = 1 << 10,
+        STATUS_NO_REVISION_ENEMY        = 1 << 11,
     };
 
 
-    struct Info                     // size: 0x24
+    struct CollisionData            // size: 0x24
     {
-        Vec2f centerOffset;          // 0
-        Vec2f halfSize;              // 8
-        Shape shape;                // 10
-        u8 type;                    // 11   type of the owner of this instance
+        Vec2f centerOffset;         // 0
+        Vec2f halfSize;             // 8
+        ShapeType shapeType;        // 10
+        u8 kind;                    // 11   the kind of actor this is
         u8 attack;                  // 12   type of the attack this instance performs
-        u32 typeMask;               // 14   mask of owner types to interact with
-        u32 attackMask;             // 18   mask for attack types to receive
-        Flag flag;                  // 1C   sets allowed interactions
+        u32 vsKind;                 // 14   kinds of actors to interact with
+        u32 vsDamage;               // 18   attack types to receive
+        u32 status;                 // 1C   sets special flags
         HitCallback callback;       // 20
     };
 
@@ -146,29 +160,35 @@ public:
     ActorCollisionCheck();
     ~ActorCollisionCheck();
 
-    void set(ActorBase* owner, const Info& info);
-    void set(ActorBase* owner, const Info& info, const sead::BitFlag8& collisionMask);
-    void set(ActorBase* owner, const Info& info, const sead::BitFlag8& collisionMask, u8 layer);
+    void set(ActorBase* owner, const CollisionData& collisionData);
+    void set(ActorBase* owner, const CollisionData& collisionData, const sead::BitFlag8& collisionMask);
+    void set(ActorBase* owner, const CollisionData& collisionData, const sead::BitFlag8& collisionMask, u8 layer);
 
+    f32 getTop();
+    f32 getBottom();
+    f32 getCenterY();
+    f32 getRight();
+    f32 getLeft();
+    f32 getCenterX();
 
     LineNodeMgr<ActorCollisionCheck>::Node listNode;   // 0
 
-    ActorBase* owner;                                      // C
-    ActorBase* ignored;                                    // 10   inited to 0
+    ActorBase* owner;                                  // C
+    ActorBase* ignored;                                // 10   inited to 0
     u8 _14[4];                                         // 14
     u8 id;                                             // 18   used by things with multiple collisionCheck e.g. KuriboTower
     u8 _19[3];                                         // 19
-    Info info;                                         // 1C
+    CollisionData info;                                         // 1C
     f32 trapezoidOffsetTL;                             // 40
     f32 trapezoidOffsetTR;                             // 44
     f32 trapezoidOffsetBL;                             // 48
     f32 trapezoidOffsetBR;                             // 4C
     f32 collisionOffsetsX[10];                         // 50
     f32 collisionOffsetsY[10];                         // 78
-    Vec2f lastCollisionPos;                             // A0
-    TypeMask hitType;                                  // A8   Owner types of others collided with
-    AttackMask attacksPerformed;                       // AC   Attacks performed on others
-    AttackMask attacksRecieved;                        // B0   Attacks recieved from others
+    Vec2f lastCollisionPos;                            // A0
+    TargetKind hitType;                                // A8   Owner types of others collided with
+    DamageFrom attacksPerformed;                       // AC   Attacks performed on others
+    DamageFrom attacksRecieved;                        // B0   Attacks recieved from others
     sead::BitFlag8 collisionMask;                      // B4   
     u8 layer;                                          // B5   
     u8 flag;                                           // B6   if == 2 is inactive, is set to 253 before checking collision
@@ -177,11 +197,10 @@ public:
 
 
 
-class ActorCollisionCheckMgr : public sead::IDisposer     // size: 0x18
+class ActorCollisionCheckMgr
 {
+    SEAD_SINGLETON_DISPOSER(ActorCollisionCheckMgr);
 public:
-    static ActorCollisionCheckMgr* instance;
-
     void addToList(ActorCollisionCheck* aCollisionCheck);
     void removeFromList(ActorCollisionCheck* aCollisionCheck);
 

@@ -13,6 +13,7 @@ struct ProfileInfo
     u16 drawPriority;
 };
 
+static constexpr u16 EXECUTE_PRIORITY_LIFT = 0x2D;
 
 class fBase;
 typedef fBase* (*ProcCreateFunction)();
@@ -27,9 +28,16 @@ struct Profile
 
 enum ResLoadMode : s8
 {
-    RES_LOAD_MODE_NONE = 0,
-    RES_LOAD_MODE_ALWAYS = 1,
-    RES_LOAD_MODE_COURSE = 2,
+    RES_LOAD_MODE_NONE                = 0x0,
+    RES_LOAD_MODE_ALWAYS              = 0x1,
+    RES_LOAD_MODE_COURSE              = 0x2,
+    
+    RES_LOAD_MODE_CASTLE_6            = 0x4,      // Load resources for 6-castle area 1/2
+    RES_LOAD_MODE_CASTLE_6_AREA_3     = 0x5,      // Load resources for 6-castle area 3
+    RES_LOAD_MODE_CASTLE_6_AREA_4     = 0x6,      // Load resourcesfor 6-castle area 4
+    RES_LOAD_MODE_CASTLE_9            = 0x7,      // Load resources for 9-castle area 1/2
+    RES_LOAD_MODE_CASTLE_9_AREA_3     = 0x8,      // Load resources for 9-castle area 3
+    RES_LOAD_MODE_CASTLE_9_AREA_4     = 0x9,      // Load resourcesfor 9-castle area 4
 };
 
 struct ResTableEntry

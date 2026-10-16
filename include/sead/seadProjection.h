@@ -3,7 +3,7 @@
 #include "math/Mtx44.h"
 #include "math/Vec.h"
 
-#include "sead/seadGraphics.h"
+#include "sead/gfx/seadGraphics.h"
 #include "sead/seadRuntimeTypeInfo.h"
 
 namespace sead {

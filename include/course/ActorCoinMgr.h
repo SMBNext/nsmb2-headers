@@ -3,6 +3,7 @@
 #include "sead/heap/seadDisposer.h"
 
 #include "math/Vec.h"
+#include "utility/Direction.h"
 
 
 // Size: 0x4CA0
@@ -43,7 +44,7 @@ public:
     struct CoinJumpInfo
     {
         Vec3f position;          // 0x0
-        u8 direction;           // 0xC - 0 : right, 1 : left
+        Direction direction;    // 0xC - 0 : right, 1 : left
         u8 numCoins;            // 0xD
         u8 upwardThrust;        // 0xE - is beaten by gravity at values less than 0xC unless coins are going upwards
         u8 _F;                  // 0xF

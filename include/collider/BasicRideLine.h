@@ -18,5 +18,5 @@ public:
     u8 _1;
     Ride2Point ride2Point;
     u32 _14;
-    BgCheckUnitInfo bgCheckData;
+    BgUnitCode bgCheckData;
 };

@@ -1,64 +1,118 @@
 #pragma once
 
 #include "actors/ActorBase.h"
-#include "collider/ActorBgCollisionCheck.h"
+#include "collider/ActorBgCollisionObjCheck.h"
+#include "types.h"
 
-
-class ActorCollision : public ActorBase     // size: 0xFC4
+// size: 0xFC4
+class ActorCollision : public ActorBase
 {
     SEAD_RTTI_OVERRIDE(ActorCollision, ActorBase);
+public:
+    enum class QuakeCollisionType : u32
+    {
+        cMediumQuake = 0,
+        cLargeQuake  = 1,
+        cSmallQuake  = 2,
+    };
+
+    enum class LiquidProcessCmd : u8
+    {
+        cNoCommand      = 0,
+        cEnableProcess  = 1,
+        cDisableProcess = 2,
+    };
 
 public:
     ActorCollision();
     
-    void afterCreate(int) override;
-    int onDelete() override;
-    int beforeExecute() override;
-    void afterExecute(int) override;
+    void postCreate(Result createResult) override;
+    Result onDelete() override;
+    bool preExecute() override;
+    void postExecute(Result execResult) override;
 
-    ActorBgCollisionCheck* getBgCollisionCheck() override;   // returns collisionCheck
-    ActorBgCollisionCheck* getBgCollisionCheck2() override;  // returns collisionCheck
-    
-    virtual void vfD8();    // deleted
-    virtual void vfDC();    // deleted
-    virtual void vfE0();    // deleted
-    virtual void vfE4();    // deleted
-    virtual void vfE8();    // deleted
-    virtual void vfEC();    // deleted
-    virtual void vfF0();    // deleted
-    virtual void vfF4();    // deleted
-    virtual bool vfF8();    // returns false
-    virtual void vfFC(u32); // called from beforeExecute if vfF8 returns true and _190 is 0
-    virtual void onCollisionLava(ActorBase* other);   // null, called when in lava, depending on flags
-    virtual f32 vf104();    // returns 0.25
-    virtual f32 vf108();
+    // Returns `this->collisionCheck`.
+    ActorBgCollisionCheck* getBgCollisionCheck() override;
 
-    void applyYAcceleration();      // calls Actor::incrementYSpeed with verticalAccel + speedMax.y
-    void applyFallAcceleration();   // calls Actor::moveToTargetYSpeed with verticalAccel + maxFallSpeed
+    // Returns `this->collisionCheck`.
+    const ActorBgCollisionCheck* getBgCollisionCheck() const override;
 
+    // Deleted
+    virtual void vfD8();
+
+    // Deleted
+    virtual void vfDC();
+
+    // Deleted
+    virtual void vfE0();
+
+    // Deleted
+    virtual void vfE4();
+
+    // Deleted
+    virtual void vfE8();
+
+    // Deleted
+    virtual void vfEC();
+
+    // Deleted
+    virtual void vfF0();
+
+    // Deleted
+    virtual void vfF4();
+
+    // Returns false
+    virtual bool quakeCollisionEnabled();
+
+    // Called in `preExecute` when a quake occurs if quake collision is enabled.
+    virtual void onCollisionQuake(QuakeCollisionType quakeType);
+
+    // Null. Called while in lava, depending on flags.
+    virtual void onCollisionLava(ActorBase* other);
+
+    // Returns 0.25.
+    virtual f32 getLiquidSpeedScalarX();
+
+    // Returns 0.0 if `this->_FB6` is true, otherwise returns `a1`.
+    virtual f32 getUnkSpeedY(f32 a1);
+
+    // Applies `this->accelerationY`, only enforcing the minimum speed / downward terminal velocity in `this->minSpeedY`.
+    void applyFallAcceleration();
+
+    // Accelerates towards `this->targetSpeedY`, where a negative `this->accelerationY` moves towards the target, and a positive moves away.
+    void applyAccelerationY();
+
+    // Processes movement, applying gravity, acceleration, and liquid forces.
     void processMovement();
 
-    ActorBgCollisionObjCheck collisionCheck;     // 1C8
-    
-    f32 _F88;                           // F88  inited to 0.0
-    f32 _F8C;                           // F8C  inited to 0.0
-    Vec3f* liquidCheckPosition;          // F90  inited to &position
-    f32 liquidSplashScale;              // F94  inited to 1.0
-    f32 _F98;                           // F98  inited to 0.0
-    f32 _F9C;                           // F9C  inited to 0.0
-    f32 _FA0;                           // FA0  inited to 0.0
-    f32 _FA4;                           // FA4  inited to 0.0
-    f32 yMaxSpeedLiquid;                // FA8  inited to 1.5
-    f32 yMinSpeedLiquid;                // FAC  inited to -1.5
-    f32 ySpeedIncrementLiquid;          // FBO  inited to -0.0625
-    u8 inLiquidType;                    // FB4  inited to 0
-    u8 _FB5;                            // FB5  ^
-    u8 _FB6;                            // FB6  ^
-    u8 isInLiquid;                      // FB7  ^
-    u8 _FB8;                            // FB8  ^
-    u8 _FB9;                            // FB9  ^
-    u8 _FBA;                            // FBA  ^
-    u8 _FBB;                            // FBB  ^
-    u8 _FBC;                            // FBC  ^
-    u32 _FC0;                           // FC0  ^
+    // Returns true if the actor is in touching two parallel walls or floors.
+    bool isSquished();
+
+public:
+    /* 0x1C8 */  ActorBgCollisionObjCheck collisionCheck;   // 
+    /* 0xF88 */  f32 unkXSpeedRelated;                      // Inited to 0.0, added to X speed in ActorBase::processMovement()
+    /* 0xF8C */  f32 _F8C;                                  // Inited to 0.0
+    /* 0xF90 */  Vec3f* liquidCheckPosition;                // Inited to &position
+    /* 0xF94 */  f32 liquidSplashScale;                     // Inited to 1.0
+    /* 0xF98 */  Vec2f unkSpeedAdditional;                  // Inited to (0.0, 0.0), added to speed in ActorBase::processMovement()
+    /* 0xFA0 */  f32 _FA0;                                  // Inited to 0.0
+    /* 0xFA4 */  f32 _FA4;                                  // Inited to 0.0
+    /* 0xFA8 */  f32 maxSpeedYLiquid;                       // Inited to 1.5
+    /* 0xFAC */  f32 minSpeedYLiquid;                       // Inited to -1.5
+    /* 0xFB0 */  f32 accelerationYLiquid;                   // Inited to -0.0625
+    /* 0xFB4 */  u8 inLiquidType;                           // Inited to 0
+    /* 0xFB5 */  bool doLiquidProcess;                      // If set, the actor will process checks for liquids every frame. Should be set via liquidProcessCommand.
+    /* 0xFB6 */  bool _FB6;                                 // 
+    /* 0xF87 */  bool isInLiquid;                           // Whether the actor is in liquid. Only works if liquid processing is enabled.
+    /* 0xFB8 */  u8 _FB8;                                   // 
+    /* 0xFB9 */  bool disableLavaCallback;                  // If set, the onCollisionLava() callback will be disabled and actor will behave same as with poison or water.
+    /* 0xFBA */  LiquidProcessCmd liquidProcessCmd;         // The command to give regarding liquid processing. Gets reset to 0 every frame (one-shot).
+    /* 0xFBB */  bool forceXLiquidSpeedOnly;                // If set, the liquid scalar for X speed will be used, and Y speed will be set to a value defined in getUnkYSpeed()
+    /* 0xFBC */  u8 _FBC;                                   // 
+    /* 0xFBD */
+    /* 0xFBE */
+    /* 0xFBF */
+    /* 0xFC0 */  u32 _FC0;                                  //
 };
+
+size_assert(ActorCollision, 0xFC4);

@@ -14,6 +14,7 @@ public:
 
 AllocationFailedHandler AllocationFailedHandler::sAllocationFailedHandler;
 
+mw_bl(0x00101020)
 void AllocationFailedHandler::registerCallback()
 {
     sead::HeapMgr::instance()->mAllocFailedCallback = &sAllocationFailedHandler;

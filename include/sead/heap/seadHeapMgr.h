@@ -48,6 +48,7 @@ public:
 
     // Address: 0x0011340C
     Heap* getCurrentHeap() const;
+    inline Heap* setCurrentHeap(Heap* heap) { return setCurrentHeap_(heap); }
     
     // TODO
     // static Heap* getRootHeap(s32 n) { return sRootHeaps.at(n); }

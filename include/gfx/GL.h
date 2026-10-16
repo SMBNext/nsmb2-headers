@@ -53,11 +53,6 @@ typedef float           GLclampf;
 #define GL_COPY_FCRAM_DMP           0x01000000
 #define GL_NO_COPY_FCRAM_DMP        0x02000000
 
-#define NN_GX_MEM_FCRAM             0x00010000
-#define NN_GX_MEM_VRAMA             0x00020000
-#define NN_GX_MEM_VRAMB             0x00030000
-
-
 void glBindTexture(GLenum target, GLuint texture);
 void glGetTexParameteriv(GLenum target, GLenum pname, GLint* params);
 void glActiveTexture(GLenum texture);
@@ -75,6 +70,7 @@ void glUseProgram(GLuint program);
 void glDeleteProgram(GLuint program);
 int glGetUniformLocation(GLuint program, const char* name);
 void glGenBuffers(GLsizei n, GLuint* buffers);
+void glDeleteBuffers(GLsizei n, const GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);
 void glBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
 void glEnableVertexAttribArray(GLuint index);

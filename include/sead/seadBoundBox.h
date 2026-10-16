@@ -13,21 +13,21 @@ public:
 public:
     BoundBox2() { setUndef(); }
     BoundBox2(T x0, T y0, T x1, T y1) { set(x0, y0, x1, y1); }
-    BoundBox2(const Vec2& min, const Vec2& max) : mMin(min), mMax(max) {}
+    BoundBox2(const Vec2& min, const Vec2& max) : min(min), max(max) {}
 
-    T getSizeX() const { return mMax.x - mMin.x; }
-    T getSizeY() const { return mMax.y - mMin.y; }
+    T getSizeX() const { return max.x - min.x; }
+    T getSizeY() const { return max.y - min.y; }
 
-    T getHalfSizeX() const { return (mMax.x - mMin.x) / 2.0f; }
-    T getHalfSizeY() const { return (mMax.y - mMin.y) / 2.0f; }
+    T getHalfSizeX() const { return (max.x - min.x) / 2.0f; }
+    T getHalfSizeY() const { return (max.y - min.y) / 2.0f; }
 
-    const Vec2& getMin() const { return mMin; }
-    const Vec2& getMax() const { return mMax; }
+    const Vec2& getMin() const { return min; }
+    const Vec2& getMax() const { return max; }
 
-    Vec2 getTL() const { return mMin; }
-    Vec2 getTR() const { return Vec2(mMax.x, mMin.y); }
-    Vec2 getBL() const { return Vec2(mMin.x, mMax.y); }
-    Vec2 getBR() const { return mMax; }
+    Vec2 getTL() const { return min; }
+    Vec2 getTR() const { return Vec2(max.x, min.y); }
+    Vec2 getBL() const { return Vec2(min.x, max.y); }
+    Vec2 getBR() const { return max; }
 
     Vec2 getCenter() const;
     void getCenter(Vec2* p) const;
@@ -51,18 +51,10 @@ public:
     void scaleX(T sx);
     void scaleY(T sy);
 
-    // Custom - for convenience
-    BoundBox2(T x) { set(x, x, x, x); }
-
-    void scale(T s) { scaleX(s); scaleY(s); };
-    void padX(T s) { mMin.x -= s; mMax.x += s; }
-    void padY(T s) { mMin.y -= s; mMax.y += s; }
-    void pad(T s) { padX(s); padY(s); };
     bool intersects(const sead::BoundBox2<T>& box);
 
-private:
-    Vec2 mMin;
-    Vec2 mMax;
+    Vec2 min;
+    Vec2 max;
 
     static const BoundBox2<T> cUndefined;
 };
@@ -79,16 +71,16 @@ public:
     BoundBox3(T x0, T y0, T z0, T x1, T y1, T z1) { set(x0, y0, z0, x1, y1, z1); }
     BoundBox3(const Vec3& min, const Vec3& max) { set(min, max); }
 
-    T getSizeX() const { return mMax.x - mMin.x; }
-    T getSizeY() const { return mMax.y - mMin.y; }
-    T getSizeZ() const { return mMax.z - mMin.z; }
+    T getSizeX() const { return max.x - min.x; }
+    T getSizeY() const { return max.y - min.y; }
+    T getSizeZ() const { return max.z - min.z; }
 
-    T getHalfSizeX() const { return (mMax.x - mMin.x) / 2.0f; }
-    T getHalfSizeY() const { return (mMax.y - mMin.y) / 2.0f; }
-    T getHalfSizeZ() const { return (mMax.z - mMin.z) / 2.0f; }
+    T getHalfSizeX() const { return (max.x - min.x) / 2.0f; }
+    T getHalfSizeY() const { return (max.y - min.y) / 2.0f; }
+    T getHalfSizeZ() const { return (max.z - min.z) / 2.0f; }
 
-    const Vec3& getMin() const { return mMin; }
-    const Vec3& getMax() const { return mMax; }
+    const Vec3& getMin() const { return min; }
+    const Vec3& getMax() const { return max; }
 
     Vec3 getCenter() const;
     void getCenter(Vec3* p) const;
@@ -106,19 +98,10 @@ public:
     void scaleY(T sy);
     void scaleZ(T sz);
 
-    // Custom - for convenience
-    BoundBox3(T x) { set(x, x, x, x, x, x); }
-
-    void scale(T s) { scaleX(s); scaleY(s); scaleZ(s); }
-    void padX(T s) { mMin.x -= s; mMax.x += s; }
-    void padY(T s) { mMin.y -= s; mMax.y += s; }
-    void padZ(T s) { mMin.z -= s; mMax.z += s; }
-    void pad(T s) { padX(s); padY(s); padZ(s); };
     bool intersects(const sead::BoundBox3<T>& box);
 
-private:
-    Vec3 mMin;
-    Vec3 mMax;
+    Vec3 min;
+    Vec3 max;
 
     static const BoundBox3<T> cUndefined;
 };

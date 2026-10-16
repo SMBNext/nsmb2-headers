@@ -1,21 +1,33 @@
 #pragma once
 
-#include "fBase.h"
+#include "actors/fBase.h"
+#include "course/Profiles.h"
+#include "types.h"
 
-class dBase : public fBase      // size: 0x14
+extern bool isPaused;
+
+
+// size: 0x14
+class dBase : public fBase
 {
 public:
     dBase();
     virtual ~dBase();
 
-    int beforeCreate() override;
-    void afterCreate(int) override;
-    int beforeDelete() override;
-    void afterDelete(int) override;
-    int beforeExecute() override;
-    void afterExecute(int) override;
-    int beforeDraw() override;
-    void afterDraw(int) override;
+    bool preCreate() override;
+    void postCreate(Result createResult) override;
+    bool preDelete() override;
+    void postDelete(Result deleteResult) override;
+    bool preExecute() override;
+    void postExecute(Result execResult) override;
+    bool preDraw() override;
+    void postDraw(Result drawResult) override;
 
-    virtual void vf3C();        // deleted
+    // Deleted.
+    virtual void vf3C();
+
+    // Creates a child under the given `parent`.
+    static dBase* createChild(u16 profileId, dBase* parent, u32 param);
 };
+
+size_assert(dBase, 0x14);

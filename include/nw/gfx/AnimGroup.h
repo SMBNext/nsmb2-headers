@@ -5,15 +5,14 @@
 #include "nw/gfx/Common.h"
 #include "nw/gfx/SceneNode.h"
 
+#include "nw/os/Memory.h"
+
 #include "nw/ut/MoveArray.h"
 
-namespace nw { 
-
-namespace os { class MemorySizeCalculator; }
+namespace nw {
 
 namespace gfx {
 
-namespace anim { class AnimBlendOp; }
 class SceneNode;
 
 class AnimGroup : public GfxObject
@@ -80,5 +79,3 @@ private:
 
 } // namespace gfx
 } // namespace nw
-
-

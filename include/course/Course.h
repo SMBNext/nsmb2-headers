@@ -8,6 +8,23 @@
 class Course
 {
 public:
+    enum class CourseType : u8
+    {
+        NORMAL              = 0x0,
+        TOAD_HOUSE_UNK      = 0x1,
+        TOAD_HOUSE_POWERUP  = 0x2,
+        TOAD_HOUSE_1UP      = 0x3,
+        RAINBOW_COURSE      = 0x4,
+        CREDITS             = 0x5,
+        CANNON_LEVEL        = 0x6,
+    };
+
+    enum class AreaType : u8
+    {
+        NORMAL              = 0x0,
+        GHOST_HOUSE         = 0x1,
+        REZNOR_BATTLE       = 0x7,
+    };
 
     struct TilesetNames
     {
@@ -34,21 +51,23 @@ public:
         u8 padD[3];
         u8 levelEntranceID;
         u8 unk11;
-        u8 specialLevelFlag1;
-        u8 specialLevelFlag2;
+        CourseType courseType;
+        AreaType areaType;
         u8 coinRushTimeLimit;
         u8 pad15[2];
     };
 
-    struct ZoneBounding
+    struct ScrollData
     {
-        u32 upperBound;
-        u32 lowerBound;
-        u32 unkUpperBound;
-        u32 unkLowerBound;
+        s32 primaryUpperBound;
+        s32 primaryLowerBound;
+        s32 secondaryUpperBound;       // Used when the player is climbing
+        s32 secondaryLowerBound;       // Used when the player is climbing
         u16 id;
         u16 flags;
-        u8 pad14[8];
+        u16 unkUpperBoundBase;         // Used instead of 64.0 when some arg is set
+        u16 unkLowerBoundBase;
+        u8 pad14[4];
     };
 
     struct Unk3
@@ -61,12 +80,12 @@ public:
     struct ZoneBackground
     {
         u16 id;
-        s16 yPosition;
-        s16 xPosition;
+        s16 offsetY;
+        s16 offsetX;
         u8 pad6[2];
         char name[16];
-        u16 unk18;
-        u8 pad1A[2];
+        u8 parallaxMode;
+        u8 pad[3];
     };
 
     struct Unk5
@@ -74,7 +93,43 @@ public:
         u8 unk0[20];
     };
 
-    struct Entrance
+    enum EntranceType
+    {
+        ENTR_TYPE_NORMAL              = 0,
+        ENTR_TYPE_CHECKPOINT          = 1,
+        ENTR_TYPE_DOOR_EXIT           = 2,
+        ENTR_TYPE_PIPE_UP             = 3,
+        ENTR_TYPE_PIPE_DOWN           = 4,
+        ENTR_TYPE_PIPE_LEFT           = 5,
+        ENTR_TYPE_PIPE_RIGHT          = 6,
+        ENTR_TYPE_FALL                = 7,
+        ENTR_TYPE_GROUND_POUND        = 8,
+        ENTR_TYPE_SLIDE               = 9,
+        ENTR_TYPE_SWIM                = 10,
+        ENTR_TYPE_NORMAL_MISPOS1      = 11,
+        ENTR_TYPE_NORMAL_MISPOS2      = 12,
+        ENTR_TYPE_NORMAL_MISPOS3      = 13,
+        ENTR_TYPE_INSTANT_MOVEMENT    = 14,
+        ENTR_TYPE_BOSS_DOOR_EXIT      = 15,
+        ENTR_TYPE_MINI_PIPE_UP        = 16,
+        ENTR_TYPE_MINI_PIPE_DOWN      = 17,
+        ENTR_TYPE_MINI_PIPE_LEFT      = 18,
+        ENTR_TYPE_MINI_PIPE_RIGHT     = 19,
+        ENTR_TYPE_JUMP_RIGHT          = 20,
+        ENTR_TYPE_VINE                = 21,
+        ENTR_TYPE_PIPE_SCREEN         = 22,
+        ENTR_TYPE_BOSS_STANDING       = 23,
+        ENTR_TYPE_JUMP_LEFT           = 24,
+        ENTR_TYPE_BOSS_JUMP           = 25,
+        ENTR_TYPE_BOSS_FALL           = 26,
+        ENTR_TYPE_DOOR_ENTRANCE       = 27,
+        ENTR_TYPE_UNK2_CRASH          = 28,
+        ENTR_TYPE_BOWSER_BATTLE       = 29,
+        ENTR_TYPE_WALK_RIGHT          = 30,
+        ENTR_TYPE_WALK_LEFT           = 31,
+    };
+
+    struct Entrance   // Size: 0x18
     {
         u16 x;
         u16 y;
@@ -116,29 +171,30 @@ public:
         u8 pad2[2];
     };
 
-    struct Zone
+    struct Zone       // Size: 0x1C
     {
         u16 x;
         u16 y;
         u16 width;
         u16 height;
-        u16 unk8;
+        u16 unk8;                   // Unused seemingly
         u16 padA;
         u8 id;
         u8 boundingBlockId;
-        u8 unkE;                    // Read by BgScrollMgr
-        u8 unkF;                    // Read by BgScrollMgr
-        u8 unk10;                   // Read by BgScrollMgr
-        u8 pad11[3];
+        u8 cameraMode;              // Read by BgScrollMgr
+        u8 zoomIdx;                 // Read by BgScrollMgr
+        u8 zoomChange;              // Read by BgScrollMgr; copy unused
+        u8 pad11;
+        u8 _12;                     // Read by DoorObake (0x437160)
         u8 multiplayerTracking;
         u8 progressPathId;
         u8 musicId;
         u8 pad17;
         u8 backgroundBlockId;
-        u8 unk19;                   // Read by BgScrollMgr
-        u8 pad1A;
-        u8 pad1B;
+        u8 cameraFlags;             // Read by BgScrollMgr
+        u8 pad1A[2];                // padding
     };
+    size_assert(Course::Zone, 0x1C);
 
     struct Location
     {
@@ -166,8 +222,8 @@ public:
 
     struct PathNode
     {
-        u16 x;
-        u16 y;
+        s16 x;
+        s16 y;
         f32 speed;
         f32 accel;
         u16 delay;
@@ -199,11 +255,10 @@ public:
     Entrance* getEntranceById(u8 entranceId);
     Zone* getZoneById(u8 zoneId, sead::BoundBox2f* boundingOut = nullptr);
     Path* getPathById(u8 pathId);
-    ZoneBounding* getZoneBoundingById(u16 boundingId);
     Location* getLocationById(sead::BoundBox2f* boundingOut, u8 id);
     PathNode* getPathNodesById(u8 pathId);
 
-    bool findLocationContainingPoint(u8* locationIdOut, const Vec2f& point, f32 marginX = 0.0f, f32 marginY = 0.0f);
+    bool findLocationContainingPoint(u8* locationIdOut, const Vec3f& point, f32 marginX = 0.0f, f32 marginY = 0.0f);
 
     void getZoneRect(sead::BoundBox2f* boundingOut, const Zone& zone, f32 margin = 0.0f);
     bool findZoneContainingPoint(u8* zoneIdOut, const Vec2f& point, f32 margin = 0.0f);
@@ -218,7 +273,7 @@ public:
         {
             TilesetNames* tilesets;
             Settings* settings;
-            ZoneBounding* boundings;
+            ScrollData* boundings;
             Unk3* unk3;
             ZoneBackground* backgrounds;
             Unk5* unk5;
@@ -313,6 +368,8 @@ public:
     // Address: 0x001CEBD8
     bool getCourseName(sead::FixedSafeString<8>* nameOut, u8 gameMode, u8 worldId, u8 levelId);
 
+    static void unloadTilesets();
+
 private:
     Course mFiles[4];
 };
@@ -320,10 +377,11 @@ private:
 size_assert(CourseData, 0xF50);
 
 // TODO: Maybe move somewhere else and choose better name?
-struct StageInfo : public sead::IDisposer   // size: 0x20
+class StageInfo // size: 0x20
 {
-
-    enum EntranceType : u8
+    SEAD_SINGLETON_DISPOSER(StageInfo);
+public:
+    enum class EntranceType : u8
     {
         NONE                = 0,
         FROM_LEVEL_START    = 1,
@@ -331,21 +389,24 @@ struct StageInfo : public sead::IDisposer   // size: 0x20
         MID_LEVEL_WARP      = 3,
     };
 
-    static StageInfo* instance;
+    // Address: 0x0043058C
+    void setCurrentToDestEntrance();
 
-    u8 mode;                    // 0: Normal, 1: Debug, 2: DLC (Debug-DLC in non Gold-Edition)
-    u8 world;                   // Same as in level names minus 1
-    u8 level;                   // Same as in level names minus 1
-    u8 area;                    // Inited to 0x00
-    u8 entrance;                // Inited to 0xFF
-    u8 zone;                    // Inited to 0x00
-    EntranceType entranceType;  // Inited to 0x00
-    u8 _17;                     // Inited to 0x00
-    u8 destWorld;               // Inited to 0x00
-    u8 destLevel;               // Inited to 0x00
-    u8 destArea;                // Inited to 0x00
-    u8 destEntrance;            // Inited to 0xFF
-    u8 _1C;                     // Inited to 0x00
+    u8 mode;                            // 10: Normal, 1: Debug, 2: DLC (Debug-DLC in non Gold-Edition)
+    u8 world;                           // 11: Same as in level names minus 1
+    u8 level;                           // 12: Same as in level names minus 1
+    u8 area;                            // 13: Inited to 0x00
+    u8 entrance;                        // 14: Inited to 0xFF
+    u8 zone;                            // 15: Inited to 0x00
+    EntranceType entranceType;          // 16: Inited to 0x00
+    u8 destMode;                        // 17: Inited to 0x00
+    u8 destWorld;                       // 18: Inited to 0x00
+    u8 destLevel;                       // 19: Inited to 0x00
+    u8 destArea;                        // 1A: Inited to 0x00
+    u8 destEntrance;                    // 1B: Inited to 0xFF
+    EntranceType destEntranceType;      // 1C: Inited to 0x00
 
-    u8 _unk1D[3];               // Padding
+    u8 _unk1D[3];                       // Padding
 };
+
+size_assert(StageInfo, 0x20);

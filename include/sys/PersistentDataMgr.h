@@ -3,11 +3,10 @@
 #include "sead.h"
 
 
-class PersistentDataMgr : public sead::IDisposer
+class PersistentDataMgr
 {
+    SEAD_SINGLETON_DISPOSER(PersistentDataMgr);
 public:
-    static PersistentDataMgr* instance;
-
     u16 get(f32 x, f32 y);
     void set(f32 x, f32 y, u16 data);
 };

@@ -86,6 +86,25 @@ public:
     // Address: 0x004AFCD8
     sead::BitFlag16* getUnkFlag();
 
+    // Inlined
+    PlayerObject* getPlayer2(s32 playerId = 0)
+    {
+        if (playerId >= 2)
+            return mPlayers2[0];
+        return mPlayers2[playerId];
+    };
+
+    bool removePlayer2(s32 playerId)
+    {
+        mPlayerFlags.changeBit(playerId, false);
+        return mPlayerFlags.getDirect() == 0;
+    }
+
+    bool allPlayersDown() const
+    {
+        return mPlayerFlags.isZero();
+    }
+
 private:
     u32 _14;
     u32 _18;

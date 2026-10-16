@@ -8,6 +8,7 @@ typedef void (*InitFunc)(void);
 extern InitFunc __init_array_start;
 extern InitFunc __init_array_end;
 
+mw_bl(0x00100014)
 void static_init()
 {
     for (InitFunc* p = &__init_array_start; p < &__init_array_end; p++)

@@ -4,66 +4,125 @@
 
 #include "sys/Common.h"
 
+#include "sead/ptcl/seadptcl.h"
 #include "sead/seadRuntimeTypeInfo.h"
 
-struct EffectParam      // size: 0x28
-{
-    u32 emitterSetId;       // 0
-    f32 scale;              // 4
-    Vec3f positionOffset;    // 8
-    ColorF32 tintColor;     // 14
-    u32 flags;              // 24
-};
+#include "effect/PtclParam.h"
 
+#include "effect/EffectId.h"
 
-class Effect     // size: 0x40
+// size: 0x40
+class Effect
 {
 public:
+    // Address: 0x001D0A24
     Effect();
-    Effect(u32 id);
 
-    void setEffectId(u32 id);
-    void update(const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+    // Address: 0x001D07D4
+    Effect(u32 effectId);
+
+    // Address: 0x001D04C4
+    void setEffectId(u32 effectId);
+
+    // Address: 0x001D062C
+    void setScale(const Vec2f& scale);
+
+    // Address: 0x001D0694
+    void setLoopInterval(f32 interval);
+
+    // Address: 0x001D070C
+    sead::ptcl::EmitterSet* getEmitterSet();
+
+    // Address: 0x001D0740
     void remove();
 
+    // Address: 0x001D0788
+    void kill();
+
+    // Address: 0x001D0838
+    bool update(const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+
+    // Address: 0x001D0970
+    bool update(const Mtx34& matrix, bool matrixHasScale);
+
+    // Address: 0x0029FB2C
+    bool createEffect(u32 effectId, const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+
+    // Address: 0x004974E4
+    s32 getRuntimeUserData();
+
+    // Address: 0x00497510
     bool isAlive();
 
-    Mtx34 mtx;                  // 0
+    inline sead::ptcl::Handle& getHandle() { return mHandle; }
+    inline PtclParam* getParam() { return mParamEntry; }
+
+private:
+    // Address: 0x001D0A44
+    void _update();
+
+    Mtx34 mMatrix;              // 0
     bool mMtxHasScale;          // 30
-    void* mHandleEmitterSet;    // 34
-    u32 mHandleCreateID;        // 38
-    EffectParam* paramEntry;    // 3C
+    sead::ptcl::Handle mHandle; // 34
+    PtclParam* mParamEntry;     // 3C
 };
 
-
-class ScopedEffect : public Effect          // size: 0x5C
+// size: 0x5C
+class LevelEffect : public Effect
 {
 public:
-    ScopedEffect();
-    ~ScopedEffect();                // Calls remove()
+    // C1 Address: 0x003125A0
+    LevelEffect();
 
-    virtual void vf0();                     // deleted
-    virtual void vf4();                     // deleted
-    
-    SEAD_RTTI_BASE(ScopedEffect);
+    // D1 Address: 0x00312544
+    ~LevelEffect();
 
-    void createEffect(u32 id, const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+    // Deleted
+    virtual void vf0();
 
+    // Deleted
+    virtual void vf4();
 
-    u32 _44;
-    u32 _48;
-    u32 _4C;
-    u32 _50;        // Vec2 probably
-    u32 _54;        // ^
-    s16 effectID;
-    bool mIsActive;
+    // GetRuntimeTypeInfo:                  0x004A31DC
+    // GetRuntimeTypeInfoStatic::typeInfo:  0x00603984
+    SEAD_RTTI_BASE(LevelEffect);
+
+    inline void setActive(bool active) { mIsActive = active; }
+    inline bool isActive() { return mIsActive; }
+
+private:
+    u32 _44;                    // 44
+    sead::ListNode* mListNode;  // 48 - idk what list type this is
+    u32 _4C;                    // 4C
+    u32 _50;                    // 50
+    sead::ListImpl* mEffects;   // 54
+    s16 mEffectID;              // 58
+    bool mIsActive;             // 5A
 };
 
-class UnkEffectType : public ScopedEffect          // size: 0x5C
+// size: 0x5C
+class UnkEffectType : public LevelEffect
 {
 public:
+    // C1 Address: 0x00237100
     UnkEffectType();
 
-    SEAD_RTTI_OVERRIDE(UnkEffectType, ScopedEffect);
+    // D1 Address: 0x00237118
+    ~UnkEffectType();
 
+    // Address: 0x00236E84
+    void createEffect(u32 effectId, const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+
+    // Address: 0x00236F10
+    void createEffect(u32 effectId, const Mtx34& matrix, bool matrixHasScale);
+
+    // Address: 0x00236FC0
+    void update(const Vec3f* position = nullptr, const Vec3i* rotation = nullptr, const Vec3f* scale = nullptr);
+
+    // Address: 0x00237060
+    void update(const Mtx34& matrix, bool matrixHasScale);
+
+    // GetRuntimeTypeInfo:                  0x0049C628
+    // GetRuntimeTypeInfoStatic::typeInfo:  0x006035A4
+    SEAD_RTTI_OVERRIDE(UnkEffectType, LevelEffect);
 };

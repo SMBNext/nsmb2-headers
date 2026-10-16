@@ -1,15 +1,22 @@
 #pragma once
 
+#include "collider/ActorBgCollisionCheckResult.h"
 #include "collider/FollowArg.h"
 #include "collider/UnkCollisionClass.h"
+#include "math/Vec.h"
+#include "sead/seadRuntimeTypeInfo.h"
 #include "sys/LineNodeMgr.h"
+#include "utility/Direction.h"
+
+#include "collider/BgUnitCode.h"
 
 class ActorBase;
 class ActorBgCollisionCheck;
 
-
+// Size: 0x138
 class BgCollision
 {
+    SEAD_RTTI_BASE(BgCollision);
 public:
     enum Type : u8
     {
@@ -55,65 +62,14 @@ public:
         TYPE_CONVEYOR_RIGHT         = 39,
     };
 
-    enum SurfaceType : u32
-    {
-        SURFACE_TYPE_NORMAL         = 0,
-        SURFACE_TYPE_ICE            = 1,
-        SURFACE_TYPE_SNOW           = 2,
-        SURFACE_TYPE_QUICKSAND      = 3,
-        SURFACE_TYPE_SAND_DESERT    = 4,
-        SURFACE_TYPE_GRASS          = 5,
-        SURFACE_TYPE_CLOUD          = 6,
-        SURFACE_TYPE_SAND_BEACH     = 7,
-        SURFACE_TYPE_CARPET         = 8,
-        SURFACE_TYPE_LEAVES         = 9,
-        SURFACE_TYPE_WOOD           = 10,
-        SURFACE_TYPE_WATER          = 11,
-    };
-
-    enum Behavior : u32
-    {
-        BEHAVIOR_NORMAL                 = 0,
-        BEHAVIOR_LINE                   = 1,
-        BEHAVIOR_COIN_OUTLINE           = 2,
-        BEHAVIOR_COIN                   = 3,
-        BEHAVIOR_BLUE_COIN              = 4,
-        BEHAVIOR_EXPLODABLE             = 5,
-        BEHAVIOR_BRICK_BLOCK            = 6,
-        BEHAVIOR_QUESTION_MARK_BLOCK    = 7,
-        BEHAVIOR_PARTLY_SOLID           = 8,
-        BEHAVIOR_RED_OUTLINE            = 9,
-        BEHAVIOR_INVISIBLE_BLOCK        = 10,
-        BEHAVIOR_SLOPE                  = 11,
-        BEHAVIOR_SLOPE_UPSIDE_DOWN      = 12,
-        BEHAVIOR_LIQUID                 = 13,
-        BEHAVIOR_CLIMBABLE              = 14,
-        BEHAVIOR_DAMAGE                 = 15,
-        BEHAVIOR_PIPE                   = 16,
-        BEHAVIOR_CONVEYOR               = 17,
-        BEHAVIOR_DONUT_PLATFORM         = 18,
-        BEHAVIOR_NO_JUMP                = 20,
-        BEHAVIOR_HORIZONTAL_ROPE        = 21,
-        BEHAVIOR_CLIMB_POLE             = 22,
-        BEHAVIOR_FLIPPER_GATE           = 32,
-        BEHAVIOR_CLOWN_CAR_FLASH_SAFE   = 33,
-        BEHAVIOR_NO_HEADBONK            = 34,
-        BEHAVIOR_NOTE_BLOCK             = 35,
-        BEHAVIOR_OBAKE_SPRING           = 36,
-        BEHAVIOR_POW_BLOCK              = 37,
-    };
-    
 public:
+    using Callback = void (*)(BgCollision* collider, ActorBgCollisionCheck* otherMgr);
+    using CallbackWall = void (*)(BgCollision *collider, ActorBgCollisionCheck *otherMgr, Direction direction);
+    
+    using CheckRev = bool (*)(ActorBase *self, ActorBase *other);
+    using CheckRevWall = bool (*)(ActorBase *self, ActorBase *other, Direction direction);
 
-    typedef void (*Callback)(BgCollision* collider, ActorBgCollisionCheck* otherMgr);
-    typedef void (*CallbackWall)(BgCollision *collider, ActorBgCollisionCheck *otherMgr, Direction direction);
-    typedef bool (*CheckRev)(ActorBase *self, ActorBase *other);
-    typedef bool (*CheckRevWall)(ActorBase *self, ActorBase *other, u8 direction);
-
-
-
-    virtual void vf0();     // deleted. rtti?
-
+public:
     BgCollision();
     virtual ~BgCollision();
 
@@ -137,91 +93,222 @@ public:
     void setSurfaceType(u32 type);
     void setBehaviour(u32 type);    
     void setSubBehaviour(u32 type);
+    
+    void reset();
 
-    Vec2f getPosition();
+    ActorBase* getOwner() const
+    {
+        return mOwnerPtr;
+    }
 
+    template<typename T>
+    T* getOwner() const
+    {
+        return reinterpret_cast<T*>(mOwnerPtr);
+    }
 
-    LineNodeMgr<BgCollision>::Node listNodesA;
-    LineNodeMgr<BgCollision>::Node listNodesB;
-    LineNodeMgr<BgCollision>::Node listNodesC;
-    LineNodeMgr<BgCollision>::Node listNodesD;
-    LineNodeMgr<BgCollision>::Node listNodesE;
-    LineNodeMgr<BgCollision>::Node listNodesF;
-    LineNodeMgr<BgCollision> _4C;
-    LineNodeMgr<BgCollision> _54;
-    LineNodeMgr<BgCollision> _5C;
-    LineNodeMgr<BgCollision> _64;
-    Callback callbackTop;
-    Callback callbackBottom;
-    CallbackWall callbackSide;
-    CheckRev checkRevTop;
-    CheckRev checkRevBottom;
-    CheckRevWall checkRevSide;
-    ActorBase* owner;
-    ActorBase* ignoreActor;
-    FollowArg followArg;
-    Vec2f posOffset;
-    Vec2f posOffsetPrev;
-    Vec2f rotPivotOffset;       // used to be distToCenter
-    Vec2f rotPivotOffsetPrev;
-    Vec2f typeOffset;           // assumed
-    Vec2f typeOffsetPrev;       // assumed
-    sead::BoundBox2f _CC;
-    u8 type;
-    u8 _DD;
-    u8 _DE;
-    u8 _DF;
-    u64 behaviourData;
-    u8 _E8;
-    u8 _E9;
-    u8 _EA;
-    u8 _EB;
-    s32 angle;
-    s32 anglePrev;
-    u32 _F4;
-    u32 _F8;
-    u8 _FC;
-    u8 _FD;
-    u8 _FE;
-    u8 _FF;
-    UnkCollisionClass unkClass;
+    ActorBase* getIgnoreActor() const
+    {
+        return mIgnoreActorPtr;
+    }
+
+    void setIgnoreActor(ActorBase* ignoreActor)
+    {
+        mIgnoreActorPtr = ignoreActor;
+    }
+    
+    
+    const FollowArg& getFollowArg() const
+    {
+        return mFollowArg;
+    }
+
+    Vec2f& getPosOffset()
+    {
+        return mPosOffset;
+    }
+
+    const Vec2f& getPosOffset() const
+    {
+        return mPosOffset;
+    }
+
+    Vec2f& getTypeOffset()
+    {
+        return mTypeOffset;
+    }
+
+    const Vec2f& getTypeOffset() const
+    {
+        return mTypeOffset;
+    }
+
+    f32 getPosX() const
+    {
+        return mFollowArg.positionPtr->x + mPosOffset.x;
+    }
+
+    f32 getPosY() const
+    {
+        return mFollowArg.positionPtr->y + mPosOffset.y;
+    }
+
+    // Returns the position of the BgCollision. (`this->mFollowArg.positionPtr + mPosOffset`).
+    Vec2f getPos() const;
+
+    f32 getPosPrevX() const
+    {
+        return mFollowArg.prevPositionPtr->x + mPosOffsetPrev.x;
+    }
+
+    f32 getPosPrevY() const
+    {
+        return mFollowArg.prevPositionPtr->y + mPosOffsetPrev.y;
+    }
+
+    // Returns the previous frame position of the BgCollision. (`this->mFollowArg.prevPositionPtr + mPosOffset`).
+    Vec2f getPosPrev() const;
+
+    f32 getTypePosX() const
+    {
+        return getPosX() + mTypeOffset.x;
+    }
+
+    f32 getTypePosY() const
+    {
+        return getPosY() + mTypeOffset.y;
+    }
+
+    Vec2f getTypePos() const
+    {
+        return getPos() + mTypeOffset;
+    }
+
+    f32 getTypePosPrevX() const
+    {
+        return getPosPrevX() + mTypeOffsetPrev.x;
+    }
+
+    f32 getTypePosPrevY() const
+    {
+        return getPosPrevY() + mTypeOffsetPrev.y;
+    }
+
+    Vec2f getTypePosPrev() const
+    {
+        return getPosPrev() + mTypeOffsetPrev;
+    }
+
+    bool isInactive() const
+    {
+        return mIsInactive;
+    }
+    
+    Angle getAngle() const
+    {
+        return mAngle;
+    }
+
+    void setAngle(Angle angle)
+    {
+        mAngle = angle;
+    }
+        
+    // Sets the callbacks used when something collides with this BgCollision.
+    // Callback `callbackFoot` is used when a foot sensor collides with this BgCollision.
+    // Callback `callbackHead` is used when a head sensor collides with this BgCollision.
+    // Callback `callbackWall` is used when a wall sensor collides with this BgCollision.
+    void setCallback(Callback callbackFoot, Callback callbackHead, CallbackWall callbackWall)
+    {
+        mCallbackFoot = callbackFoot;
+        mCallbackHead = callbackHead;
+        mCallbackWall = callbackWall;
+    }
+
+    inline void setCallbackFoot(Callback callbackFoot)
+    {
+        mCallbackFoot = callbackFoot;
+    }
+
+    // Sets the reverse check used when something collides with this BgCollision.
+    void setCheckRev(CheckRev checkRevFoot, CheckRev checkRevHead, CheckRevWall checkRevWall)
+    {
+        mCheckRevFoot = checkRevFoot;
+        mCheckRevHead = checkRevHead;
+        mCheckRevWall = checkRevWall;
+    }
+
+    void setCheckRevFoot(CheckRev checkRevFoot)
+    {
+        mCheckRevFoot = checkRevFoot;
+    }
+
+    void setCheckRevHead(CheckRev checkRevHead)
+    {
+        mCheckRevHead = checkRevHead;
+    }
+
+    void setCheckRevWall(CheckRevWall checkRevWall)
+    {
+        mCheckRevWall = checkRevWall;
+    }
+
+    void removeFromListFoot(ActorBgCollisionCheck* check);
+
+    // Clears the four ActorBgCollisionCheck lists.                    0x0044C1C0
+    void clearBcList();
+
+    // Resets the per-frame collision state.                           0x0044C780
+    void sub_44C780();
+
+protected:
+    using List = LineNodeMgr<BgCollision>;
+    using BcList = LineNodeMgr<ActorBgCollisionCheck>;
+    
+    /* 0x004 */  List::Node mActiveListNode;        // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mActiveList`.
+    /* 0x010 */  List::Node mSolidListNode;         // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mSolidList`.
+    /* 0x01C */  List::Node mNonSolidListNode;      // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mNonSolidList`.
+    /* 0x028 */  List::Node mCandidateNode;         // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mCandidateList`.
+    /* 0x034 */  List::Node mCoinListNode;          // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mCoinList`.
+    /* 0x040 */  List::Node mTarzanListNode;        // A list node used when inserting this BgCollision into `ActorBgCollisionMgr->mTarzanList`.
+    /* 0x04C */  BcList mBcListFoot;                // A list of ActorBgCollisionCheck with foot sensor hitting this BgCollision.
+    /* 0x054 */  BcList mBcListHead;                // A list of ActorBgCollisionCheck with head sensor hitting this BgCollision.
+    /* 0x05C */  BcList mBcListRight;               // A list of ActorBgCollisionCheck with right wall sensor hitting this BgCollision.
+    /* 0x064 */  BcList mBcListLeft;                // A list of ActorBgCollisionCheck with left wall sensor hitting this BgCollision.
+    /* 0x06C */  Callback mCallbackFoot;            // Callback used when a foot sensor hits this BgCollision.
+    /* 0x070 */  Callback mCallbackHead;            // Callback used when a head sensor hits this BgCollision.
+    /* 0x074 */  CallbackWall mCallbackWall;        // Callback used when a wall sensor hits this BgCollision.
+    /* 0x078 */  CheckRev mCheckRevFoot;
+    /* 0x07C */  CheckRev mCheckRevHead;
+    /* 0x080 */  CheckRevWall mCheckRevWall;
+    /* 0x084 */  ActorBase* mOwnerPtr;
+    /* 0x088 */  ActorBase* mIgnoreActorPtr;
+    /* 0x08C */  FollowArg mFollowArg;
+    /* 0x09C */  Vec2f mPosOffset;
+    /* 0x0A4 */  Vec2f mPosOffsetPrev;
+    /* 0x0AC */  Vec2f mRotPivotOffset;
+    /* 0x0B4 */  Vec2f mRotPivotOffsetPrev;
+    /* 0x0BC */  Vec2f mTypeOffset;           // assumed
+    /* 0x0C4 */  Vec2f mTypeOffsetPrev;       // assumed
+    /* 0x0CC */  sead::BoundBox2f mBounds;
+    /* 0x0DC */  u8 mType;
+    /* 0x0DD */  u8 _DD;
+    /* 0x0DE */  u8 _DE;
+    /* 0x0DF */  u8 _DF;
+    /* 0x0E0 */  BgUnitCode mBgCheckData;
+    /* 0x0E8 */  u8 mCategory;
+    /* 0x0E9 */  u8 _E9;
+    /* 0x0EA */  u8 _EA;
+    /* 0x0EB */  u8 _EB;
+    /* 0x0EC */  Angle mAngle;
+    /* 0x0F0 */  Angle mAnglePrev;
+    /* 0x0F4 */  u32 _F4;
+    /* 0x0F8 */  u32 _F8;
+    /* 0x0FC */  u8 mIsInactive;
+    /* 0x0FD */  u8 _FD;
+    /* 0x0FE */  u8 _FE;
+    /* 0x0FF */  u8 _FF;
+    /* 0x100 */  ActorBgCollisionCheckResult mCollisionResult;
 };
 
-size_assert(BgCollision,0x138);
-
-
-class BgCheckUnitInfo
-{
-public:
-    u64 data;
-};
-
-
-class BgCollisionCheckResultArea
-{
-public:
-    u8 hitDirectionFlag;
-    Vec2f hitPos;
-    u32 _C;
-    u32 _10;
-    u8 _14[4];                            // unk
-    BgCheckUnitInfo bgCheckData;
-    BgCollision* bgCollision;
-};
-
-
-class BgCollisionCheckResultPoint
-{
-public:   
-    BgCheckUnitInfo bgCheckData;
-    BgCollision* bgCollision;
-};
-
-
-class BgHitCheckCallback
-{
-public:
-    virtual bool hit(const BgCollisionCheckResultArea& hitRes) = 0;
-    virtual bool hit(const BgCollisionCheckResultPoint& hitRes) = 0;
-
-};
+size_assert(BgCollision, 0x138);

@@ -9,32 +9,32 @@ namespace sead
 template <typename T>
 inline Vector2<T> BoundBox2<T>::getCenter() const
 {
-    return Vector2<T>((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f);
+    return Vector2<T>((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);
 }
 
 template <typename T>
 inline void BoundBox2<T>::getCenter(Vec2* center) const
 {
-    center->set((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f);
+    center->set((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);
 }
 
 template <typename T>
 inline bool BoundBox2<T>::isUndef() const
 {
-    return mMin.x > mMax.x || mMin.y > mMax.y;
+    return min.x > max.x || min.y > max.y;
 }
 
 template <typename T>
 inline bool BoundBox2<T>::isInside(const Vec2& p) const
 {
-    return mMin.x <= p.x && p.x <= mMax.x && mMin.y <= p.y && p.y <= mMax.y;
+    return min.x <= p.x && p.x <= max.x && min.y <= p.y && p.y <= max.y;
 }
 
 template <typename T>
 inline void BoundBox2<T>::setUndef()
 {
-    mMin.set(__FLT_MAX__);
-    mMax.set(-__FLT_MAX__);
+    min.set(__FLT_MAX__);
+    max.set(-__FLT_MAX__);
 }
 
 template <typename T>
@@ -42,74 +42,74 @@ inline void BoundBox2<T>::set(T x0, T y0, T x1, T y1)
 {
     if (x0 < x1)
     {
-        mMin.x = x0;
-        mMax.x = x1;
+        min.x = x0;
+        max.x = x1;
     }
     else
     {
-        mMin.x = x1;
-        mMax.x = x0;
+        min.x = x1;
+        max.x = x0;
     }
 
     if (y0 < y1)
     {
-        mMin.y = y0;
-        mMax.y = y1;
+        min.y = y0;
+        max.y = y1;
     }
     else
     {
-        mMin.y = y1;
-        mMax.y = y0;
+        min.y = y1;
+        max.y = y0;
     }
 }
 
 template <typename T>
 inline void BoundBox2<T>::set(const Vec2& min, const Vec2& max)
 {
-    mMin = min;
-    mMax = max;
+    this->min = min;
+    this->max = max;
 }
 
 template <typename T>
 inline void BoundBox2<T>::setMin(const Vec2& min)
 {
-    mMin = min;
+    this->min = min;
 }
 
 template <typename T>
 inline void BoundBox2<T>::setMax(const Vec2& max)
 {
-    mMax = max;
+    this->max = max;
 }
 
 template <typename T>
 inline void BoundBox2<T>::setFromCenterAndXY(T centerX, T centerY, T sizeX, T sizeY)
 {
-    mMin.set(centerX - sizeX / 2.0f, centerY - sizeY / 2.0f);
-    mMax.set(centerX + sizeX / 2.0f, centerY + sizeY / 2.0f);
+    min.set(centerX - sizeX / 2.0f, centerY - sizeY / 2.0f);
+    max.set(centerX + sizeX / 2.0f, centerY + sizeY / 2.0f);
 }
 
 template <typename T>
 inline void BoundBox2<T>::setFromCornerAndXY(T cornerX, T cornerY, T sizeX, T sizeY)
 {
-    mMin.set(cornerX, cornerY);
-    mMax.set(cornerX + sizeX, cornerY + sizeY);
+    min.set(cornerX, cornerY);
+    max.set(cornerX + sizeX, cornerY + sizeY);
 }
 
 template <typename T>
 inline void BoundBox2<T>::setFromCornerAndXY(const Vec2& corner, T sizeX, T sizeY)
 {
-    mMin.set(corner.x, corner.y);
-    mMax.set(corner.x + sizeX, corner.y + sizeY);
+    min.set(corner.x, corner.y);
+    max.set(corner.x + sizeX, corner.y + sizeY);
 }
 
 template <typename T>
 inline void BoundBox2<T>::offset(T dx, T dy)
 {
-    mMin.x += dx;
-    mMin.y += dy;
-    mMax.x += dx;
-    mMax.y += dy;
+    min.x += dx;
+    min.y += dy;
+    max.x += dx;
+    max.y += dy;
 }
 
 template <typename T>
@@ -121,53 +121,53 @@ inline void BoundBox2<T>::offset(const Vec2& dv)
 template <typename T>
 inline void BoundBox2<T>::scaleX(T sx)
 {
-    T sizeX = (mMax.x - mMin.x) * (sx / 2.0f);
-    T centerX = (mMin.x + mMax.x) / 2.0f;
+    T sizeX = (max.x - min.x) * (sx / 2.0f);
+    T centerX = (min.x + max.x) / 2.0f;
 
-    mMin.x = centerX - sizeX;
-    mMax.x = centerX + sizeX;
+    min.x = centerX - sizeX;
+    max.x = centerX + sizeX;
 }
 
 template <typename T>
 inline void BoundBox2<T>::scaleY(T sy)
 {
-    T sizeY = (mMax.y - mMin.y) * (sy / 2.0f);
-    T centerY = (mMin.y + mMax.y) / 2.0f;
+    T sizeY = (max.y - min.y) * (sy / 2.0f);
+    T centerY = (min.y + max.y) / 2.0f;
 
-    mMin.y = centerY - sizeY;
-    mMax.y = centerY + sizeY;
+    min.y = centerY - sizeY;
+    max.y = centerY + sizeY;
 }
 
 template <typename T>
 inline Vector3<T> BoundBox3<T>::getCenter() const
 {
-    return Vector3<T>((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f, (mMin.z + mMax.z) / 2.0f);
+    return Vector3<T>((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f);
 }
 
 template <typename T>
 inline void BoundBox3<T>::getCenter(Vec3* center) const
 {
-    center->set((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f, (mMin.z + mMax.z) / 2.0f);
+    center->set((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f);
 }
 
 template <typename T>
 inline bool BoundBox3<T>::isUndef() const
 {
-    return mMin.x > mMax.x || mMin.y > mMax.y || mMin.z > mMax.z;
+    return min.x > max.x || min.y > max.y || min.z > max.z;
 }
 
 template <typename T>
 inline bool BoundBox3<T>::isInside(const Vec3& p) const
 {
-    return mMin.x <= p.x && p.x <= mMax.x && mMin.y <= p.y && p.y <= mMax.y && mMin.z <= p.z &&
-           p.z <= mMax.z;
+    return min.x <= p.x && p.x <= max.x && min.y <= p.y && p.y <= max.y && min.z <= p.z &&
+           p.z <= max.z;
 }
 
 template <typename T>
 inline void BoundBox3<T>::setUndef()
 {
-    mMin.set(__FLT_MAX__);
-    mMax.set(-__FLT_MAX__);
+    min.set(__FLT_MAX__);
+    max.set(-__FLT_MAX__);
 }
 
 template <typename T>
@@ -175,66 +175,66 @@ inline void BoundBox3<T>::set(T x0, T y0, T z0, T x1, T y1, T z1)
 {
     if (x0 < x1)
     {
-        mMin.x = x0;
-        mMax.x = x1;
+        min.x = x0;
+        max.x = x1;
     }
     else
     {
-        mMin.x = x1;
-        mMax.x = x0;
+        min.x = x1;
+        max.x = x0;
     }
 
     if (y0 < y1)
     {
-        mMin.y = y0;
-        mMax.y = y1;
+        min.y = y0;
+        max.y = y1;
     }
     else
     {
-        mMin.y = y1;
-        mMax.y = y0;
+        min.y = y1;
+        max.y = y0;
     }
 
     if (z0 < z1)
     {
-        mMin.z = z0;
-        mMax.z = z1;
+        min.z = z0;
+        max.z = z1;
     }
     else
     {
-        mMin.z = z1;
-        mMax.z = z0;
+        min.z = z1;
+        max.z = z0;
     }
 }
 
 template <typename T>
 inline void BoundBox3<T>::set(const Vec3& min, const Vec3& max)
 {
-    mMin = min;
-    mMax = max;
+    this->min = min;
+    this->max = max;
 }
 
 template <typename T>
 inline void BoundBox3<T>::setMin(const Vec3& min)
 {
-    mMin = min;
+    this->min = min;
 }
 
 template <typename T>
 inline void BoundBox3<T>::setMax(const Vec3& max)
 {
-    mMax = max;
+    this->max = max;
 }
 
 template <typename T>
 inline void BoundBox3<T>::offset(T dx, T dy, T dz)
 {
-    mMin.x += dx;
-    mMin.y += dy;
-    mMin.z += dz;
-    mMax.x += dx;
-    mMax.y += dy;
-    mMax.z += dz;
+    min.x += dx;
+    min.y += dy;
+    min.z += dz;
+    max.x += dx;
+    max.y += dy;
+    max.z += dz;
 }
 
 template <typename T>
@@ -246,47 +246,45 @@ inline void BoundBox3<T>::offset(const Vec3& dv)
 template <typename T>
 inline void BoundBox3<T>::scaleX(T sx)
 {
-    T sizeX = (mMax.x - mMin.x) * (sx / 2.0f);
-    T centerX = (mMin.x + mMax.x) / 2.0f;
+    T sizeX = (max.x - min.x) * (sx / 2.0f);
+    T centerX = (min.x + max.x) / 2.0f;
 
-    mMin.x = centerX - sizeX;
-    mMax.x = centerX + sizeX;
+    min.x = centerX - sizeX;
+    max.x = centerX + sizeX;
 }
 
 template <typename T>
 inline void BoundBox3<T>::scaleY(T sy)
 {
-    T sizeY = (mMax.y - mMin.y) * (sy / 2.0f);
-    T centerY = (mMin.y + mMax.y) / 2.0f;
+    T sizeY = (max.y - min.y) * (sy / 2.0f);
+    T centerY = (min.y + max.y) / 2.0f;
 
-    mMin.y = centerY - sizeY;
-    mMax.y = centerY + sizeY;
+    min.y = centerY - sizeY;
+    max.y = centerY + sizeY;
 }
 
 template <typename T>
 inline void BoundBox3<T>::scaleZ(T sz)
 {
-    T sizeZ = (mMax.z - mMin.z) * (sz / 2.0f);
-    T centerZ = (mMin.z + mMax.z) / 2.0f;
+    T sizeZ = (max.z - min.z) * (sz / 2.0f);
+    T centerZ = (min.z + max.z) / 2.0f;
 
-    mMin.z = centerZ - sizeZ;
-    mMax.z = centerZ + sizeZ;
+    min.z = centerZ - sizeZ;
+    max.z = centerZ + sizeZ;
 }
-
-// Custom - for convenience
 
 template <typename T>
 inline bool BoundBox2<T>::intersects(const BoundBox2<T>& box)
 {
-    return (mMin.x < box.mMax.x && mMax.x > box.mMin.x && mMin.y < box.mMax.y && mMax.y > box.mMin.y);
+    return (min.x < box.max.x && max.x > box.min.x && min.y < box.max.y && max.y > box.min.y);
 }
 
 template <typename T>
 inline bool BoundBox3<T>::intersects(const BoundBox3<T>& box)
 {
-    return (mMin.x < box.mMax.x && mMax.x > box.mMin.x &&
-            mMin.y < box.mMax.y && mMax.y > box.mMin.y &&
-            mMin.z < box.mMax.z && mMax.z > box.mMin.z);
+    return (min.x < box.max.x && max.x > box.min.x &&
+            min.y < box.max.y && max.y > box.min.y &&
+            min.z < box.max.z && max.z > box.min.z);
 }
 
 }

@@ -976,6 +976,10 @@ Profile Profiles[ProfileId::Num] =
 #define RESENTRY(f, u) \
     { (sead::SafeString*)f, u }
 
+mw_symptr(0x002E3D14)
+mw_symptr(0x002E3F10)
+mw_symptr(0x002E4454)
+mw_symptr(0x002E46CC)
 ResTableEntry ResTable[ProfileId::Num] =
 {
     RESENTRY(nullptr, 0),               //   0
@@ -1450,6 +1454,7 @@ ResTableEntry ResTable[ProfileId::Num] =
     RESENTRY(nullptr, 0),               // 469
 };
 
+mw_symptr(0x0021368C)
 u8 ProfileSoundActorKinds[ProfileId::Num] =
 {
     0, 0, 0, 0, 0, 0, 0, 0,    //     0-7
@@ -1517,6 +1522,23 @@ u8 ProfileSoundActorKinds[ProfileId::Num] =
 #define ACTENTRY(x) \
     (ActorInfo*)(x)
 
+mw_symptr(0x00251208)
+mw_symptr(0x002514D0)
+mw_symptr(0x00251690)
+mw_symptr(0x002517F0)
+mw_symptr(0x00251938)
+mw_symptr(0x002E3034)
+mw_symptr(0x002E3428)
+mw_symptr(0x002E9A40)
+mw_symptr(0x003033F4)
+mw_symptr(0x00303564)
+mw_symptr(0x00303DCC)
+mw_symptr(0x00403898)
+mw_symptr(0x00403A60)
+mw_symptr(0x00404000)
+mw_symptr(0x004040D8)
+mw_symptr(0x004041FC)
+mw_symptr(0x00404310)
 ActorInfo* ActorInfos[ProfileId::Num] =
 {
     nullptr,                                    //   0
@@ -2003,6 +2025,7 @@ extern Profile* profileTablePtr;
 extern ProfileInfo* profileInfoTablePtr;
 extern u32 numProfiles;
 
+mw_b(0x00101800)
 void InitProfileTablePtrs()
 {
     profileTablePtr = Profiles;
@@ -2010,4 +2033,5 @@ void InitProfileTablePtrs()
     numProfiles = sizeof(Profiles) / sizeof(Profile);
 }
 
+mw_replace(0x005872C4)
 u16 numProfiles2 = sizeof(Profiles) / sizeof(Profile);

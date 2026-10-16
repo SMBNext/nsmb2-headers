@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nw/types.h"
+#include "nw/gfx/res/ResSkeleton.h"
 
 namespace nw { namespace ut {
 
@@ -43,9 +44,8 @@ public:
     // Inlined
     CalculatedTransform();
 
-    // TODO: make header for ResBone
     // 0x0017A628
-    // void Setup(const ResBone bone);
+    void Setup(const nw::gfx::res::ResBone bone);
 
     // Inlined
     math::MTX34& DirectTransformMatrix() { return this->m_TransformMatrix; }

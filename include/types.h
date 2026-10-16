@@ -19,17 +19,15 @@ typedef wchar_t             char16;
 typedef float               f32;
 typedef double              f64;
 
+typedef unsigned char           bit8;
+typedef unsigned short          bit16;
+typedef unsigned int            bit32;
+typedef unsigned long long int  bit64;
 
-enum Direction : u8
-{
-    RIGHT = 0,
-    LEFT  = 1,
-    UP    = 2,
-    DOWN  = 3,
-};
+typedef int                sptr;
+typedef unsigned int       uptr;
 
-
-typedef struct
+typedef struct Offset
 {
     s32 offset;
 
@@ -61,14 +59,20 @@ struct TOffset : public Offset
     }
 };
 
-#define array_length(arr) \
-    (sizeof(arr) / sizeof((arr)[0]))
+template<typename T, size_t N>
+constexpr u32 countof(const T (&)[N])
+{
+    return static_cast<u32>(N);
+}
 
 #define array_length_assert(arr, size) \
-    static_assert(array_length(arr) == size, "array_length(" #arr ") must be " #size);
+    static_assert(countof(arr) == size, "countof(" #arr ") must be " #size);
 
 #define size_assert(type, size) \
     static_assert(sizeof(type) == size, "sizeof(" #type ") must be " #size);
 
 #define offset_assert(type, member, offset) \
     static_assert(offsetof(type, member) == offset, "offsetof(" #type ", " #member ") must be " #offset);
+
+#define align_assert(type, alignment) \
+    static_assert(alignof(type) == alignment, "alignof(" #type ") must be " #alignment)

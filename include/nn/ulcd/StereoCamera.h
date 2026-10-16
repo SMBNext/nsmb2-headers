@@ -1,6 +1,8 @@
 #pragma once
 
-#include "nn/math/Types.h"
+#include "nn/math/Vector3.h"
+#include "nn/math/Matrix34.h"
+#include "nn/math/Matrix44.h"
 
 namespace nn {
 namespace ulcd {

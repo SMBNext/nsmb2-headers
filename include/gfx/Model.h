@@ -10,7 +10,7 @@
 
 #include "gfx/GfxWrapper.h"
 
-// Size: 0x1C
+// Size: 0x18
 // Vtable: 0x005A8698
 class Model
 {
@@ -63,6 +63,7 @@ public:
         return getGfxWrapper()->getBoneWorldTransformMatrix(out, boneIdx);
     }
 
+    // This call is expensive, prefer getBoneWorldTransform(boneIdx)->GetTranslate() instead.
     inline bool getBonePosition(Vec3f& out, s32 boneIdx)
     {
         return getGfxWrapper()->getBonePosition(out, boneIdx);
@@ -98,8 +99,15 @@ public:
         return getGfxWrapper()->getBoneLocalTransform(boneIdx);
     }
 
+    inline void setDepthValue(f32 value)
+    {
+        auto wrapper = getGfxWrapper();
+        wrapper->depthValue = value;
+        wrapper->getModel()->SetUserParameter(&wrapper->depthValue);
+    }
+
 private:
-    SkeletalModelWrapper mModelWrapper;
+    ModelWrapper mModelWrapper;
 };
 
-size_assert(Model, 0x1C);
+size_assert(Model, 0x18);

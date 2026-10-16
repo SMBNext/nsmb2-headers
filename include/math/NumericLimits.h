@@ -105,10 +105,7 @@ struct NumericLimits<float> {
     static constexpr float max() { return __FLT_MAX__; }
     static constexpr float lowest() { return -__FLT_MAX__; }
     static constexpr float epsilon() { return __FLT_EPSILON__; }
-    static constexpr float infinity() {
-        union { u32 i; float f; } u = { 0x7F800000 };
-        return u.f;
-    }
+    static constexpr float infinity() { return __builtin_huge_valf(); }
     static constexpr int digits() { return __FLT_MANT_DIG__; }
     static constexpr bool is_signed = true;
     
@@ -120,10 +117,7 @@ struct NumericLimits<double> {
     static constexpr double max() { return __DBL_MAX__; }
     static constexpr double lowest() { return -__DBL_MAX__; }
     static constexpr double epsilon() { return __DBL_EPSILON__; }
-        static constexpr long double infinity() {
-        union { u64 i; double d; } u = { 0x7FF0000000000000 };
-        return u.d;
-    }
+    static constexpr long double infinity() { return __builtin_huge_val(); }
     static constexpr int digits() { return __DBL_MANT_DIG__; }
     static constexpr bool is_signed = true;
     static constexpr bool has_infinity = true;
@@ -135,10 +129,7 @@ struct NumericLimits<long double> {
     static constexpr long double max() { return __LDBL_MAX__; }
     static constexpr long double lowest() { return -__LDBL_MAX__; }
     static constexpr long double epsilon() { return __LDBL_EPSILON__; }
-    static constexpr long double infinity() {
-        union { u64 i; double d; } u = { 0x7FF0000000000000 };
-        return u.d;
-    }
+    static constexpr long double infinity() { return __builtin_huge_vall(); }
     static constexpr int digits() { return __LDBL_MANT_DIG__; }
     static constexpr bool is_signed = true;
     static constexpr bool has_infinity = true;

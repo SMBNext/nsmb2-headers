@@ -60,6 +60,8 @@ public:
     }
 
 private:
+    u32 _18;                        // 18
+
     u32 mNumSkeletalAnim;           // 1C
     AnimBase** mSkeletalAnims;      // 20
     

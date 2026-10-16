@@ -18,7 +18,7 @@ class TransformNode : public SceneNode
 public:
 
     // 0x0048B668
-    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo();
+    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo() const;
 
     struct Description : public SceneNode::Description
     {
@@ -46,21 +46,21 @@ public:
     virtual void UpdateDirection() {}
 
     // 0x001B37AC
-    virtual void UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater, SceneContext* sceneContext);
+    virtual void UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater, SceneContext* sceneContext) override;
 
     // 0x00173A98
-    virtual void Accept(ISceneVisitor* visitor);
+    virtual void Accept(ISceneVisitor* visitor) override;
 
     // 0x0048B6D4
-    virtual const math::MTX34& TrackbackWorldMatrix();
+    virtual const math::MTX34& TrackbackWorldMatrix() const override;
 
     // 0x0048B6E4
-    virtual const CalculatedTransform& TrackbackWorldTransform() const { return this->WorldTransform(); }
+    virtual const CalculatedTransform& TrackbackWorldTransform() const override { return this->WorldTransform(); }
 
     // 0x0048B6DC
-    virtual const CalculatedTransform& TrackbackLocalTransform();
+    virtual const CalculatedTransform& TrackbackLocalTransform() const override;
 
-    inline virtual void InheritTraversalResults();
+    inline virtual void InheritTraversalResults() override;
 
 protected:
 
@@ -71,7 +71,7 @@ protected:
     virtual ~TransformNode() noexcept;
 
     // 0x00173764
-    virtual Result Initialize(os::IAllocator* allocator);
+    virtual Result Initialize(os::IAllocator* allocator) override;
 
     // 0x001738E8
     static void GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize, res::ResTransformNode resTransformNode, Description description);

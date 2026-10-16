@@ -3,7 +3,7 @@
 #include "sys/ResourceMgr.h"
 #include "gfx/AnimModel.h"
 
-class LiftRenderer  // size: 0x7C
+class LiftRenderer  // Size: 0x7C
 {
 public:
     enum Type : u32
@@ -45,3 +45,5 @@ public:
     static const char* LiftResources[];
     static const char* LiftSegments[];
 };
+
+size_assert(LiftRenderer, 0x7C);

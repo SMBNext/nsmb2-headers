@@ -12,6 +12,8 @@ class Heap;
 void* operator new(size_t size);
 void* operator new[](size_t size);
 
+inline void* operator new(size_t, void* ptr) noexcept { return ptr; }
+
 void* operator new(size_t size, sead::Heap* heap, u32 align = 4);
 void* operator new[](size_t size, sead::Heap* heap, u32 align = 4);
 

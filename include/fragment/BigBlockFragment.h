@@ -20,7 +20,6 @@ class BigBlockFragment : Fragment
 public:
     enum class Type : u8
     {
-        // Retail
         Big_Renga_Block     = 0x0,   // NSMBU Leftover
         Box_Wood_A          = 0x1,   // NSMBU Leftover
         Box_Wood_B          = 0x2,   // NSMBU Leftover
@@ -44,10 +43,10 @@ public:
     static constexpr u8 TypeCount = static_cast<u8>(BigBlockFragment::Type::Count); 
 
 public:
-    // Original Address: 0x006123BC
+    // Address: 0x006123BC
     static sead::SafeString sResourceNames[];
 
-    // Original Address: 0x0061243C
+    // Address: 0x0061243C
     static sead::SafeString sModelNames[][4];
 
     // Address: 0x005E6F10

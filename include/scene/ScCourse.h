@@ -1,25 +1,98 @@
 #pragma once
 
-#include "StateScene.h"
+#include "gfx/Light.h"
+#include "player/PlayerStateData.h"
+#include "scene/StateScene.h"
 
-class ScCourse : public StateScene  // size: 0x18C
+// Size: 0x18C
+class ScCourse : public StateScene
 {
 public:
-    void zeroTimer();               // 0x0042B304
-    void showCourseCompleteMsg();   // 0x00429DD8
+    ScCourse();
+    ~ScCourse() override;
 
-    u8 getStockItemId(u8 playerId);
+    Result onCreate() override;
+    Result onDelete() override;
+    Result onExecute() override;
+    Result onDraw() override;
+    s32 vf40() override;
+
+    DECLARE_STATE_ID(ScCourse, unk1);   // This state is empty and never used
+    DECLARE_STATE_ID(ScCourse, unk2);
+    DECLARE_STATE_ID(ScCourse, unk3);
+    DECLARE_STATE_ID(ScCourse, unk4);
+    DECLARE_STATE_ID(ScCourse, unk5);
+    DECLARE_STATE_ID(ScCourse, unk6);
+
+    void setCollectionCoinCollected(u8 coinId);
+    void giveStockItem(u8 itemId, u8 playerId);
     void setStockItemId(u8 playerId, u8 stockItemId);
+    void createBsFogMgr();
+    void showCourseClearMessage();
+    void enableInventory(bool enabled);
+    void deleteLayouts();
+    void exitCourse();
+    void setupEnvLight();
+    void setCollectionCoinStatus(u8 coinId, bool status);
+    void createLayouts();
+    void doInfoMeterCollectionEffect(u8 coinId);
+    void zeroTimer();
+    void addCoins(s32 numCoins, s8 playerId);
+    void incrementCoinCount(s8 playerId);
+    void incrementLifeCount();
+    void addScore(s32 numPoints, s8 playerId);
+    s8* getCollectionCoinStatus();
+    u8 getStockItemId(u8 playerId);
+    Vec3f getCollectionCoinPanePos(u8 coinId);
+    Vec3f getStockItemPanePos();
 
-    void setCollectionCoinStatus(u8 collectionCoinId, bool status);
+    inline static ScCourse* instance()
+    {
+        return sInstance;
+    }
 
+    inline u32 getTicks()
+    {
+        return mTicks;
+    }
 
-    static ScCourse* instance;      // 0x005E7210
+    inline PlayerStateData* getPlayerStateData()
+    {
+        return &mPlayerStateData;
+    }
 
-    fBase* bsArea;                  // 3C   created and set in onCreate
-    u8 _unk40[0xEC-0X40];           // 40
-    u32 ticks;                      // EC   counts the ticks in which actors are executed
-    u8 _unkF0[0x174-0xF0];          // F0
-    u8 stockItemIds[2];             // 174
-    u8 _unk176[0x18C-0x176];        // 176
+    inline void enable182(bool state)
+    {
+        _182 = state;
+    }
+
+private:
+
+private:
+    static ScCourse* sInstance;
+
+    /* 0x03C */  fBase* mBsArea;                                //
+    /* 0x040 */  void* mPlaySceneInfoMeter;                     // Lyt::PlaySceneInfoMeter_00*
+    /* 0x044 */  void* mPlaySceneInfoMeter2P;                   // Lyt::PlaySceneInfoMeter_2P_00*
+    /* 0x048 */  void* mPlaySceneInfoMeterCoin1P;               // Lyt::PlaySceneInfoMeterCoin1P_00*
+    /* 0x04C */  void* mPlaySceneInfoMeterCoinStreetPass;       // Lyt::PlaySceneInfoMeterCoinStreetPass_00*
+    /* 0x050 */  void* mCreditsFader;                           // FadeFader*
+    /* 0x054 */  void* mCourseClearTop;                         // Lyt::CourseClearTop_00*
+    /* 0x058 */  void* mCreditsLayout;                          // Lyt::StateLayoutType2_E*
+    /* 0x05C */  PlayerStateData mPlayerStateData;              //
+    /* 0x0EC */  u32 mTicks;                                    // Ticks in which actors execute
+    /* 0x0F0 */  EnvironmentalLightSet mLights[3];              //
+    /* 0x174 */  u8 mStockItemIds[2];                           //
+    /* 0x176 */  u8 _176[2];                                    // padding
+    /* 0x178 */  u32 mTotalCoinCount;                           // Capped at 9999
+    /* 0x17C */  u32 mTotalCoinCountUnbounded;                  // Not capped
+    /* 0x180 */  bool mDecrementTimer;                          // When set, the timer decrements that frame
+    /* 0x181 */  u8 _181;                                       // Set when the Coin Rush time bonus multiplier is above 4
+    /* 0x182 */  u8 _182;                                       //
+    /* 0x183 */  u8 _183;                                       //
+    /* 0x184 */  u8 _184;                                       //
+    /* 0x185 */  u8 _185;                                       //
+    /* 0x186 */  u8 _186;                                       //
+    /* 0x187 */  u8 _187;                                       //
+    /* 0x188 */  u32 _188;                                      //
 };

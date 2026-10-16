@@ -15,7 +15,7 @@ class AnimObject : public GfxObject
 {
 public:
     // Deleted
-    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo();
+    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo() const;
 
     // 0x005F32C0
     static const nw::ut::internal::RuntimeTypeInfo s_TypeInfo;

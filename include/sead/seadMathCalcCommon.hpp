@@ -81,7 +81,7 @@ MathCalcCommon<T>::atan2(T y, T x)
 
 template <>
 inline f32
-MathCalcCommon<f32>::sinIdx(u32 idx)
+MathCalcCommon<f32>::sinIdx(s32 idx)
 {
     u32 index = (idx >> 24) & 0xff;
     u32 rest = idx & 0xffffff;
@@ -91,7 +91,7 @@ MathCalcCommon<f32>::sinIdx(u32 idx)
 
 template <>
 inline f32
-MathCalcCommon<f32>::cosIdx(u32 idx)
+MathCalcCommon<f32>::cosIdx(s32 idx)
 {
     u32 index = (idx >> 24) & 0xff;
     u32 rest = idx & 0xffffff;
@@ -101,7 +101,7 @@ MathCalcCommon<f32>::cosIdx(u32 idx)
 
 template <>
 inline f32
-MathCalcCommon<f32>::tanIdx(u32 idx)
+MathCalcCommon<f32>::tanIdx(s32 idx)
 {
     u32 index = (idx >> 24) & 0xff;
     f32 rest = static_cast<f32>(idx & 0xffffff) / 0x1000000;
@@ -111,7 +111,7 @@ MathCalcCommon<f32>::tanIdx(u32 idx)
 }
 
 template <>
-inline u32
+inline s32
 MathCalcCommon<f32>::asinIdx(f32 s)
 {
     const f32 rsqrt_2 = 0.7071067690849304f; // rsqrt(2)
@@ -135,7 +135,7 @@ MathCalcCommon<f32>::asinIdx(f32 s)
 }
 
 template <>
-inline u32
+inline s32
 MathCalcCommon<f32>::acosIdx(f32 c)
 {
     const f32 rsqrt_2 = 0.7071067690849304f; // rsqrt(2)
@@ -159,7 +159,7 @@ MathCalcCommon<f32>::acosIdx(f32 c)
 }
 
 template <>
-inline u32
+inline s32
 MathCalcCommon<f32>::atanIdx(f32 t)
 {
     if (t >= 0)
@@ -181,7 +181,7 @@ MathCalcCommon<f32>::atanIdx(f32 t)
 }
 
 template <>
-inline u32
+inline s32
 MathCalcCommon<f32>::atan2Idx(f32 y, f32 x)
 {
     if (x == 0 && y == 0)
@@ -229,7 +229,7 @@ MathCalcCommon<f32>::atan2Idx(f32 y, f32 x)
 
 template <>
 inline void
-MathCalcCommon<f32>::sinCosIdx(f32* p_sin, f32* p_cos, u32 idx)
+MathCalcCommon<f32>::sinCosIdx(f32* p_sin, f32* p_cos, s32 idx)
 {
     u32 index = (idx >> 24) & 0xff;
     f32 rest = static_cast<f32>(idx & 0xffffff) / 0x1000000;
@@ -358,33 +358,38 @@ MathCalcCommon<T>::epsilon()
 }
 
 template <>
-inline f32
+inline constexpr f32
 MathCalcCommon<f32>::abs(f32 t)
 {
-    __asm__("vabs.f32 %0, %0" : "+t"(t));
-    return t;
+    return __builtin_fabsf(t);
 }
 
 template <>
-inline s32
+inline constexpr s32
 MathCalcCommon<s32>::abs(s32 t)
 {
     return (t ^ t >> 31) - (t >> 31);
 }
 
 template <>
-inline u32
+inline constexpr u32
 MathCalcCommon<u32>::abs(u32 t)
 {
     return t;
 }
 
-// template <typename T>
-// inline s32
-// MathCalcCommon<T>::roundOff(T val)
-// {
-//     return std::floor(val + 0.5f);
-// }
+template <typename T>
+inline s32 MathCalcCommon<T>::round(T val)
+{
+    return static_cast<s32>(val >= 0 ? val + 0.5f : val - 0.5f);
+}
+
+template <typename T>
+inline s32 
+MathCalcCommon<T>::roundOff(T val)
+{
+    return floor(val + 0.5f);
+}
 
 template <>
 inline s32
@@ -393,19 +398,13 @@ MathCalcCommon<s32>::roundOff(s32 val)
     return val;
 }
 
-//template <>
-//inline s32
-//MathCalcCommon<u32>::roundOff(u32 val)
-//{
-//    return val;
-//}
-
-// template <typename T>
-// inline s32
-// MathCalcCommon<T>::floor(T val)
-// {
-//     return std::floor(val);
-// }
+template <typename T>
+inline s32
+MathCalcCommon<T>::floor(T val)
+{
+    int i = static_cast<int>(val);
+    return (val < 0 && val != i) ? static_cast<T>(i - 1) : static_cast<T>(i);
+}
 
 template <>
 inline s32
@@ -414,12 +413,13 @@ MathCalcCommon<s32>::floor(s32 val)
     return val;
 }
 
-// template <typename T>
-// inline s32
-// MathCalcCommon<T>::ceil(T val)
-// {
-//     return std::ceil(val);
-// }
+template <typename T>
+inline s32
+MathCalcCommon<T>::ceil(T val)
+{
+    int i = static_cast<int>(val);
+    return (val > 0 && val != i) ? static_cast<T>(i + 1) : static_cast<T>(i);
+}
 
 template <>
 inline s32
@@ -468,6 +468,81 @@ MathCalcCommon<T>::clamp2(T min_, T val, T max_)
     else if (val > max_) val = max_;
 
     return val;
+}
+
+template <>
+inline s32
+MathCalcCommon<s32>::gcd(s32 m, s32 n)
+{
+    if (m == 0) return n;
+    if (n == 0) return m;
+
+    u8 shift = 0;
+    while (((m | n) & 1) == 0)
+    {
+        m >>= 1;
+        n >>= 1;
+        shift++;
+    }
+
+    while ((m & 1) == 0)
+        m >>= 1;
+
+    while (n != 0)
+    {
+        while ((n & 1) == 0)
+            n >>= 1;
+
+        if (m > n)
+        {
+            s32 temp = m;
+            m = n;
+            n = temp;
+        }
+
+        n = n - m;
+    }
+
+    return m << shift;
+}
+
+template <typename T>
+inline T
+MathCalcCommon<T>::gcd(T m, T n)
+{
+    return T(MathCalcCommon<s32>::gcd(s32(m), s32(n)));
+}
+
+template <>
+inline s32
+MathCalcCommon<s32>::lcm(s32 m, s32 n)
+{
+    if (m == 0 || n == 0)
+        return 0;
+
+    s32 gcd = MathCalcCommon<s32>::gcd(m > 0 ? m : -m, n > 0 ? n : -n);
+
+    s32 div = m;
+    s32 quotient = 0;
+
+    while (div >= gcd)
+    {
+        div -= gcd;
+        quotient++;
+    }
+
+    s32 result = 0;
+    for (s32 i = 0; i < quotient; i++)
+        result += n;
+
+    return result > 0 ? result : -result;
+}
+
+template <typename T>
+inline T
+MathCalcCommon<T>::lcm(T m, T n)
+{
+    return T(MathCalcCommon<s32>::lcm(s32(m), s32(n)));
 }
 
 } // namespace sead

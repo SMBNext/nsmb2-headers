@@ -16,6 +16,8 @@ namespace nw {
 namespace gfx {
 namespace res {
 
+class ResTexture;
+
 struct ResTextureMapperData
 {
     nw::ut::ResTypeInfo typeInfo;

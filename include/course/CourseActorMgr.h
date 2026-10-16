@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sead.h"
 #include "math/Vec.h"
 #include "actors/ActorBase.h"
@@ -25,7 +27,7 @@ class CourseActorMgr
 
 public:
     ActorBase* create(ActorBase::CreateInfo* info);
-    ActorBase* searchById(s32 id);
+    ActorBase* searchById(ActorUniqueID id);
     ActorBase* searchByProfileId(u32 id);
     ActorBase* searchByProfileId(u32 id, ActorBase* prev);
     ActorBase* countByProfileId(u32 id);

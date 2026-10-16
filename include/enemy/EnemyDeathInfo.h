@@ -4,7 +4,6 @@
 #include "math/Vec.h"
 
 #include "actors/ScoreMgr.h"
-#include "state/StateID.h"
 
 // Size: 0x1C
 class EnemyDeathInfo
@@ -43,7 +42,7 @@ public:
         mFallSpeedMax(sDefaultFallSpeedMax),
         mFallAcceleration(sDefaultFallAcceleration),
         mStateID(nullptr),
-        mKillArg({ ScoreMgr::RewardType::Points_100, 0, -1 }),
+        mKillArg({ ScoreMgr::RewardType::cPoints100, 0, -1 }),
         mNoRespawn(false) {}
 
     EnemyDeathInfo(const Vec2f& speed, f32 fallSpeedMax, f32 fallAcceleration, const StateID* stateID) :
@@ -61,6 +60,10 @@ public:
 
     // Address: 0x002E84B0
     void setNoRespawn(const EnemyDeathInfo& info);
+
+    bool isNoRespawn() const { return mNoRespawn; }
+    void clearNoRespawn() { mNoRespawn = false; }
+    const StateID* getStateID() const { return mStateID; }
 
 private:
     Vec2f mSpeed;

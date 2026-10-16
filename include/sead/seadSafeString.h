@@ -52,6 +52,7 @@ public:
 
     s32 format(const T* fmt, ...);
     void copy(const T* str, s32 maxLen = -1);
+    s32 append(const SafeStringBase<T>& str, s32 appendLength = -1);
 
     s32 mBufferSize;
 };

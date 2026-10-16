@@ -1,5 +1,7 @@
 #pragma once
 
+#include "nw/os/Memory.h"
+
 namespace nw { namespace ut {
 
 enum ArrayKind
@@ -32,11 +34,11 @@ public:
 
 public:
 
-    MoveArray& operator=(MoveArray rhs)
-    {
-        rhs.swap(*this);
-        return *this;
-    }
+    // MoveArray& operator=(MoveArray rhs)
+    // {
+    //     rhs.swap(*this);
+    //     return *this;
+    // }
 
     const TElement* Elements() const { return m_Elements; }
 

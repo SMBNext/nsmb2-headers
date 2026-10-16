@@ -1,23 +1,29 @@
 #pragma once
 
-#include "actors/Enemy.h"
+#include "enemy/Enemy.h"
 #include "gfx/AnimModel.h"
 
 // Size: 0x1088
 // Vtable: 0x005CAC9C
 class DoorBase : public Enemy
 {
-
     SEAD_RTTI_OVERRIDE(DoorBase, Enemy);
 
 public:
+    enum class DoorUnkState : s32
+    {
+        Idle = 0x0,
+        Enter = 0x1,
+        Exit = 0x2,
+        Player_Entered = 0x3,
+    };
 
     DoorBase();
 
-    s32 onCreate() override;
-    s32 onDelete() override;
-    s32 onExecute() override;
-    s32 onDraw() override;
+    Result onCreate() override;
+    Result onDelete() override;
+    Result onExecute() override;
+    Result onDraw() override;
 
     DECLARE_STATE_VIRTUAL_ID_BASE(DoorBase, Open);      //
     DECLARE_STATE_VIRTUAL_ID_BASE(DoorBase, Close);     //
@@ -40,7 +46,7 @@ public:
     virtual void setAnimIdle();                 // Sets the current anim to the idle anim
 
     // Address: 0x0040B628
-    static bool collisionCallback(ActorCollisionCheck* thisCheck, ActorCollisionCheck* otherCheck);
+    static void collisionCallback(ActorCollisionCheck* thisCheck, ActorCollisionCheck* otherCheck);
 
     // Address: 0x0040B834
     void spawnAppearEffect();
@@ -55,16 +61,16 @@ public:
     void setupModelMatrix();    
 
 protected:
-    AnimModelBase* mModel;      //
-    Resource* mResource;        //
-    HeapAllocator mAllocator;   //
-    s32 _1070;                  //
-    s32 _1074;                  //
-    s32 _1078;                  //
-    bool _107C;                 // Set to True in ctor for Toride Castle and Koopa doors
+    AnimModelBase* model;       //
+    Resource* resource;         //
+    HeapAllocator allocator;    //
+    DoorUnkState doorUnkState;  //
+    s32 _1074;                  // Set to 1 when executing Open, set to 0 in finalizing Open
+    s32 _1078;                  // Set to 1 when opened (is open?), set to 0 in initializing Idle
+    bool doMusicFade;           // Set to True for Toride, Castle and Koopa doors
     u8 _107D[3];                // Probably padding
     s32 _1080;                  //
-    bool mIsVisible;            //
+    bool isVisible;             //
     u8 _1085[3];                // Probably padding
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sead/seadListImpl.h"
+#include "sead/basis/seadNew.h"
 
 namespace sead {
 

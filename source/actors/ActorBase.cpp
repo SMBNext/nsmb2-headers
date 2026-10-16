@@ -12,7 +12,7 @@ void ActorBase::updateModelMatrixWithOffset(Model* model)
     mtx.identity();
     mtx.translate(position.x, position.y, position.z);
     mtx.rotateY(rotation.y);
-    
+
     offsetMtx.identity();
     offsetMtx.translateY(centerOffset.y);
     Mtx34::multiply(&mtx, mtx, offsetMtx);
@@ -30,15 +30,16 @@ void ActorBase::updateModelMatrixWithOffset(Model* model)
     model->update();
 }
 
-void ActorBase::updateModelMatrixWithOffset(AnimModelBase* model)
+void ActorBase::updateModelMatrixWithOffset(AnimModelBase* model, bool dontUpdateAnimation)
 {
     if (!model)
         return;
 
-    model->updateAnimation();
+    if (!dontUpdateAnimation)
+        model->updateAnimation();
+
     updateModelMatrixWithOffset(static_cast<Model*>(model));
 }
-
 
 void ActorBase::updateModelMatrix(Model* model)
 {
@@ -47,17 +48,19 @@ void ActorBase::updateModelMatrix(Model* model)
 
     Mtx34 mtx;
     mtx.setRotationAndTranslation(rotation, position);
-    
+
     model->setScale(scale);
     model->setDrawMatrix(&mtx);
     model->update();
 }
 
-void ActorBase::updateModelMatrix(AnimModelBase* model)
+void ActorBase::updateModelMatrix(AnimModelBase* model, bool dontUpdateAnimation)
 {
     if (!model)
         return;
 
-    model->updateAnimation();
+    if (!dontUpdateAnimation)
+        model->updateAnimation();
+
     updateModelMatrix(static_cast<Model*>(model));
 }

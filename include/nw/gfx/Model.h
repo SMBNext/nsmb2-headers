@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nw/gfx/AnimBinding.h"
+#include "nw/gfx/IMaterialActivator.h"
 #include "nw/gfx/Material.h"
 #include "nw/gfx/res/ResMesh.h"
 #include "nw/gfx/res/ResModel.h"
@@ -87,7 +88,7 @@ public:
 
 public:
     // 0x0048E054
-    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo();
+    virtual const nw::ut::internal::RuntimeTypeInfo* GetRuntimeTypeInfo() const;
 
     struct Description : public TransformNode::Description
     {
@@ -129,8 +130,8 @@ public:
     Material* GetMaterial(int index) { return m_Materials[index]; }
     const Material* GetMaterial(int index) const { return m_Materials[index]; }
 
-    const void* GetMaterialActivator() const { return this->m_MaterialActivator.Get(); }
-    void* GetMaterialActivator() { return this->m_MaterialActivator.Get(); }
+    const IMaterialActivator* GetMaterialActivator() const { return this->m_MaterialActivator.Get(); }
+    IMaterialActivator* GetMaterialActivator() { return this->m_MaterialActivator.Get(); }
 
     bit32 GetBufferOption() const { return this->m_BufferOption; }
 
@@ -154,7 +155,12 @@ public:
 
     template<typename Type>
     void SetUserParameter(Type parameter)
-    { m_UserParameter = *reinterpret_cast<u32*>(&parameter); }
+    { 
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+        m_UserParameter = *reinterpret_cast<u32*>(&parameter);
+        #pragma GCC diagnostic pop
+    }
 
 protected:
 
@@ -226,7 +232,7 @@ private:
     u32 m_BufferOption;
     math::MTX34 m_ModelViewMatrix;
     math::MTX34 m_NormalMatrix;
-    GfxPtr<int> m_MaterialActivator;
+    GfxPtr<IMaterialActivator> m_MaterialActivator;
 
     u8 m_LayerId;
     bool m_OriginalVisibility;

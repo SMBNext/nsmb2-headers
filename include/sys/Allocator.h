@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include "sead/heap/seadHeap.h"
+#include "sead/heap/seadExpHeap.h"
 #include "sead/basis/seadNew.h"
 
 // TODO: Move these 
@@ -11,7 +12,7 @@ extern sead::Heap* ActorHeap;
 extern sead::Heap* ModelResourceHeap;
 extern sead::Heap* ModelSetupHeap;
 extern sead::Heap* BgUnitHeap;
-extern sead::Heap* CourseHeap;
+extern sead::ExpHeap* CourseHeap;
 extern sead::Heap* AreaHeap;
 extern sead::Heap* SeadParticleHeap;
 extern sead::Heap* FontHeap;
@@ -23,6 +24,7 @@ extern sead::Heap* NetHeap;
 extern sead::Heap* WorkHeap;
 extern sead::Heap* DebugHeap;
 
+void FreeCourseHeap();
 
 class Allocator
 {    

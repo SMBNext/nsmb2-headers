@@ -10,6 +10,7 @@
 #include "nw/ut/ResArrayTypes.h"
 #include "nw/anim/res/ResAnimGroup.h"
 #include "nw/gfx/res/ResMaterial.h"
+#include "nw/gfx/res/ResSkeleton.h"
 
 namespace nw {
 namespace gfx {
@@ -29,6 +30,11 @@ struct ResModelData : public ResTransformNodeData
     bool m_IsNonuniformScalable;
     u8 _padding_0[6];
     u32 m_LayerId;
+};
+
+struct ResSkeletalModelData : public ResModelData
+{
+    nw::ut::Offset toSkeleton;
 };
 
 
@@ -90,8 +96,27 @@ public:
     }
 };
 
+class ResSkeletalModel : public ResModel
+{
+public:
+    typedef ResSkeletalModel SelfType;
+    typedef ResSkeletalModelData ResDataType;
+
+    explicit ResSkeletalModel(const void* p = 0) : ResModel(p) {}
+
+    ResDataType* ptr() { return reinterpret_cast<ResDataType*>(void_ptr()); }
+    const ResDataType* ptr() const { return reinterpret_cast<const ResDataType*>(void_ptr()); }
+
+    ResDataType& ref() { return *reinterpret_cast<ResDataType*>(void_ptr()); }
+    const ResDataType& ref() const { return *reinterpret_cast<const ResDataType*>(void_ptr()); }
+
+    bool operator==(const ResModel& rhs) const { return ptr() == rhs.ptr(); }
+    bool operator!=(const ResModel& rhs) const { return ptr() != rhs.ptr(); }
+
+    ResSkeleton GetSkeleton() { return ResSkeleton(ref().toSkeleton.to_ptr()); }
+    const ResSkeleton GetSkeleton() const { return ResSkeleton(ref().toSkeleton.to_ptr()); }
+};
+
 } // namespace res
 } // namespace gfx
 } // namespace nw
-
-

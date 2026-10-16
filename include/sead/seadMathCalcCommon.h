@@ -8,8 +8,8 @@ template <typename T>
 class MathCalcCommon
 {
 public:
-    static const u32 cQuarterRoundIdx = 0x40000000; //  90 degrees, PI/2 radians
-    static const u32 cHalfRoundIdx    = 0x80000000; // 180 degrees, PI   radians
+    static constexpr u32 cQuarterRoundIdx = 0x40000000; //  90 degrees, PI/2 radians
+    static constexpr u32 cHalfRoundIdx    = 0x80000000; // 180 degrees, PI   radians
 
 public:
     struct SinCosSample
@@ -39,36 +39,36 @@ public:
     };
 
 public:
-    static T piHalf() { return 1.570796326794896619231; }
-    static T pi()     { return 3.141592653589793238462; }
-    static T pi2()    { return 6.283185307179586476924; }
-    static T zero()   { return 0; }
-    static T one()    { return 1; }
-    static T ln2()    { return 0.69314718055994530942 ; }
-    static T ln2Inv() { return 1.442695040888963407   ; }
+    static constexpr T piHalf() { return 1.570796326794896619231; }
+    static constexpr T pi()     { return 3.141592653589793238462; }
+    static constexpr T pi2()    { return 6.283185307179586476924; }
+    static constexpr T zero()   { return 0; }
+    static constexpr T one()    { return 1; }
+    static constexpr T ln2()    { return 0.69314718055994530942 ; }
+    static constexpr T ln2Inv() { return 1.442695040888963407   ; }
 
-    static T neg(T t)
+    static constexpr T neg(T t)
     {
         return -t;
     }
 
-    static T inv(T t)
+    static constexpr T inv(T t)
     {
         return 1 / t;
     }
 
-    static T sign(T t)
+    static constexpr T sign(T t)
     {
         if (t >= 0) return  1;
         else return -1;
     }
 
-    static T fitSign(T x, T y)
+    static constexpr T fitSign(T x, T y)
     {
         return abs(x) * sign(y);
     }
 
-    static T square(T t)
+    static constexpr T square(T t)
     {
         return t * t;
     }
@@ -88,16 +88,16 @@ public:
     static T atan(T t);
     static T atan2(T y, T x);
 
-    static T sinIdx(u32 idx);
-    static T cosIdx(u32 idx);
-    static T tanIdx(u32 idx);
+    static T sinIdx(s32 idx);
+    static T cosIdx(s32 idx);
+    static T tanIdx(s32 idx);
 
-    static u32 asinIdx(T s);
-    static u32 acosIdx(T c);
-    static u32 atanIdx(T t);
-    static u32 atan2Idx(T y, T x);
+    static s32 asinIdx(T s);
+    static s32 acosIdx(T c);
+    static s32 atanIdx(T t);
+    static s32 atan2Idx(T y, T x);
 
-    static void sinCosIdx(T* p_sin, T* p_cos, u32 idx);
+    static void sinCosIdx(T* p_sin, T* p_cos, s32 idx);
 
     static T exp(T t);
     static T log(T t);
@@ -113,67 +113,64 @@ public:
     static T nan();
     static T epsilon();
 
-    static bool equalsEpsilon(T a, T b, T eps = epsilon())
+    static constexpr bool equalsEpsilon(T a, T b, T eps = epsilon())
     {
         return abs(a - b) <= eps;
     }
 
-    static T abs(T t)
+    static constexpr T abs(T t)
     {
-        if (t >= 0) return t;
-        else       return -t;
+        return (t >= 0) ? t : -t;
     }
 
-    static T max(T a, T b)
+    static constexpr T max(T a, T b)
     {
-        if (a > b) return a;
-        else       return b;
+        return (a > b) ? a : b;
     }
 
-    static T min(T a, T b)
+    static constexpr T min(T a, T b)
     {
-        if (a < b) return a;
-        else       return b;
+        return (a < b) ? a : b;
     }
 
-    static T max3(T a, T b, T c)
+    static constexpr T max3(T a, T b, T c)
     {
         return max(max(a, b), c);
     }
 
-    static T min3(T a, T b, T c)
+    static constexpr T min3(T a, T b, T c)
     {
         return min(min(a, b), c);
     }
 
-    static T deg2rad(T a)
+    static constexpr T deg2rad(T a)
     {
         return a * (pi() / 180.0f);
     }
 
-    static T rad2deg(T a)
+    static constexpr T rad2deg(T a)
     {
         return a * 180.0f / pi();
     }
 
     // Only accepts an angle in the range of -180.0 to 180.0 (will clamp, otherwise).
-    static s32 deg2idx(T a)
+    static constexpr s32 deg2idx(T a)
     {
         return a * cHalfRoundIdx / 180.0f;
     }
 
-    static s32 rad2idx(T a)
+    static constexpr s32 rad2idx(T a)
     {
         return a * cHalfRoundIdx / pi();
     }
 
     // Only returns in the range of -180.0 to 180.0.
-    static T idx2deg(s32 a)
+    static constexpr T idx2deg(s32 a)
     {
         return a * (180.0f / cHalfRoundIdx);
     }
 
-    static T idx2rad(s32 a)
+    static constexpr T idx2rad(s32 a)
     {
         return a * pi() / cHalfRoundIdx;
     }
@@ -186,6 +183,7 @@ public:
     static T getRandRange(T, T);
     static T getRandSign();
 
+    static s32 round(T val);
     static s32 roundOff(T val);
     static s32 floor(T val);
     static s32 ceil(T val);

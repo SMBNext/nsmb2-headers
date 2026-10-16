@@ -16,6 +16,11 @@ public:
 
     void setRotationAndTranslation(const Vec3i& rotation, const Vec3f& translate);    // 004620D8
 
+    inline Vec3f getTranslation()
+    {
+        return Vec3f(cells[3], cells[7], cells[11]);
+    }
+
     inline void setTranslation(f32 x, f32 y, f32 z)
     {
         cells[3] = x;
@@ -95,5 +100,24 @@ public:
         result.f._23 = this->rows[2][3];
 
         return result;
+    }
+
+    inline void normalizeScale()
+    {
+        for (u8 i = 0; i < 3; i++)
+        {
+            const f32 x = rows[i][0];
+            const f32 y = rows[i][1];
+            const f32 z = rows[i][2];
+
+            const f32 len = Mathf::sqrt(x*x + y*y + z*z);
+            if (len > Mathf::epsilon())
+            {
+                float inv = 1.0f / len;
+                rows[i][0] *= inv;
+                rows[i][1] *= inv;
+                rows[i][2] *= inv;
+            }
+        }
     }
 };

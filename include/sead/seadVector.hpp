@@ -6,6 +6,10 @@
 #include "nn/math/Vector3.h"
 #include "nn/math/Vector4.h"
 
+#ifndef SEAD_MATH_VECTOR_H_
+#include "sead/seadVector.h"
+#endif
+
 namespace sead {
 
 template <typename T>

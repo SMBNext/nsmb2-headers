@@ -43,9 +43,12 @@ public:
 template <typename TCheck, typename TInstance>
 inline bool IsDerivedFrom(const TInstance* instance)
 {
+    if (!instance)
+        return false;
+
     const RuntimeTypeInfo::Interface* instanceTypeInfo = instance->getRuntimeTypeInfo();
     const RuntimeTypeInfo::Interface* checkTypeInfo = TCheck::getRuntimeTypeInfoStatic();
-    return instance && instanceTypeInfo->isDerived(checkTypeInfo);
+    return instanceTypeInfo->isDerived(checkTypeInfo);
 }
 
 template <typename TCast, typename TInstance>
@@ -72,15 +75,15 @@ inline TCast* DynamicCast(TInstance* instance)
             return getRuntimeTypeInfoStatic();                                      \
         }
 
-#define SEAD_RTTI_OVERRIDE(CLASS, BASE)                                             \
-    public:                                                                         \
-        static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()   \
-        {                                                                           \
-            static const sead::RuntimeTypeInfo::Derive<BASE> typeInfo;              \
-            return &typeInfo;                                                       \
-        }                                                                           \
-                                                                                    \
-        virtual const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const  \
-        {                                                                           \
-            return getRuntimeTypeInfoStatic();                                      \
+#define SEAD_RTTI_OVERRIDE(CLASS, BASE)                                                     \
+    public:                                                                                 \
+        static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()           \
+        {                                                                                   \
+            static const sead::RuntimeTypeInfo::Derive<BASE> typeInfo;                      \
+            return &typeInfo;                                                               \
+        }                                                                                   \
+                                                                                            \
+        virtual const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const override \
+        {                                                                                   \
+            return getRuntimeTypeInfoStatic();                                              \
         }

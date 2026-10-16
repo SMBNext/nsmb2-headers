@@ -2,6 +2,9 @@
 
 #include "types.h"
 #include "sys/Allocator.h"
+#include "nw/anim/res/ResAnim.h"
+
+class SkeletalModelWrapper;
 
 enum class PlayPolicy : u8
 {
@@ -70,3 +73,25 @@ private:
 };
 
 size_assert(AnimBase, 0x18);
+
+
+class SkeletalAnim : public AnimBase
+{
+public:
+    virtual ~SkeletalAnim() override;
+
+    // Address: 0x001B549C
+    virtual void* animEvaluator() override;                                     // nw::gfx::BaseAnimEvaluator*
+
+    // Address: 0x00495CE4
+    virtual const void* animEvaluator() const override;                         // const nw::gfx::BaseAnimEvaluator*
+
+    // Address: 0x001B54A4
+    virtual void vf10(nw::anim::res::ResAnim resAnim) override;                 //
+    
+    virtual void cleanup() override;
+    virtual void vf18(nw::anim::res::ResAnim animData, s32 a3);
+    virtual bool tryBind();
+};
+
+size_assert(SkeletalAnim, 0x18);

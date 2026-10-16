@@ -1,55 +1,110 @@
 #pragma once
 
+#include "actors/ActorUniqueID.h"
+#include "sys/Memory.h"
 #include "types.h"
 
-class fBase         // size: 0x14
+// size: 0x14
+class fBase
 {
+public:
+    enum class Lifecycle : u8
+    {
+        cCreating   = 0,    // The actor is being created.
+        cActive     = 1,    // The actor is active and running.
+        cDeleting   = 2,    // The actor is being deleted.
+    };
+
+    enum class GroupType : u8
+    {
+        cGeneric    = 0,    // The base is a generic process.
+        cScene      = 1,    // The base is a scene.
+        cActor      = 2,    // The base is an actor.
+    };
+    
+    enum class Result : u32
+    {
+        cNone    = 0,   //
+        cFailed  = 1,   //
+        cSuccess = 2,   //
+        cWait    = 3,   // This is an assumption, Result 3 is only ever referenced in `Scene::postDelete`.
+    };
+
 public:
     fBase();
     virtual ~fBase();
 
-    virtual int beforeCreate();
-    virtual int onCreate();
-    virtual void afterCreate(int);
+    virtual bool preCreate();
+    virtual Result onCreate();
+    virtual void postCreate(Result createResult);
     
-    virtual int beforeDelete();
-    virtual int onDelete();
-    virtual void afterDelete(int);
+    virtual bool preDelete();
+    virtual Result onDelete();
+    virtual void postDelete(Result deleteResult);
     
-    virtual int beforeExecute();
-    virtual int onExecute();
-    virtual void afterExecute(int);
+    virtual bool preExecute();
+    virtual Result onExecute();
+    virtual void postExecute(Result execResult);
 
-    virtual int beforeDraw();
-    virtual int onDraw();
-    virtual void afterDraw(int);
+    virtual bool preDraw();
+    virtual Result onDraw();
+    virtual void postDraw(Result drawResult);
 
-    virtual void onErase();
+    // Informs the Base that it is ready to be deleted.
+    virtual void deleteReady();
 
-    void erase();
+    // Requests deletion of this actor.
+    void requestDelete();
 
-    fBase* getParent();
-    static fBase* search(u32 unused, s32 id);                       // not part of this class
-    static inline fBase* search(s32 id) { return search(0, id); }
+    // Returns the parent of this actor, or `nullptr` if there is no parent.
+    fBase* getParent() const;
 
+    // Returns the unique ID of this actor.
+    ActorUniqueID getId() const { return uniqueId; }
 
-    s32 id;         // 4    Inited to -1
-    u32 settings;   // 8    First 4 bytes from real sprite data, inited to 0
-    u16 profileId;  // C    Inited to 0
-    u8 created;     // E    ^
-    u8 erased;      // F    ^
-    u8 _10;         // 10   ^   Set to 1 in ProcMgr::createAll if _1142C == 3
-    u8 _11;         // 11   ^
-    u8 _12;         // 12   ^
-    u8 direction;   // 13   ^
+    // Returns whether deletion has been requested for this actor.
+    bool isDeleteRequested() const { return mDeleteRequested; }
+
+    // Returns whether the actor is currently active.
+    bool isActorActive() const { return mLifecycle == Lifecycle::cActive; }
+    
+private:
+    // Executes the create operation via `commonPack`.
+    Result createPack();
+
+    // Executes the delete operation via `commonPack`.
+    Result deletePack();
+
+    // Executes the execute operation via `commonPack`.
+    Result executePack();
+
+    // Executes the draw operation via `commonPack`.
+    Result drawPack();
+
+    // Executes an operation.
+    // Returns the result returned from `onFunc`, or `preFunc` if `onFunc` was not executed.
+    Result commonPack(int (fBase::*onFunc)(), int (fBase::*preFunc)(), void (fBase::*postFunc)(Result));
+
+    // Sets data used during creation.
+    void setCreateData(u16 profileId, u32 settings, GroupType groupType);
+    
+public:
+    /* 0x04 */  ActorUniqueID uniqueId;     // A unique identifier for this actor.
+    /* 0x08 */  u32 settings;               // First 4 bytes from real sprite data, Initialized to 0.
+    /* 0x0C */  u16 profileId;              // The profile ID of this actor.
+protected:
+    /* 0x0E */  Lifecycle mLifecycle;       // The lifecycle state of this actor.
+    /* 0x0F */  bool mDeleteRequested;      // Written to by `deleteRequest`, read by `isDeleteRequested`.
+    /* 0x10 */  bool mDeferExecute;         // True if the create operation completed, but execution isn't possible yet.
+    /* 0x11 */  bool mDeferRetryCreate;     // True if the create operation has not completed, and rescheduling is needed.
+    /* 0x12 */  GroupType mGroupType;       // The group type of this actor.
+    /* 0x13 */ 
 };
 
-
-
-void* AllocFromActorHeap(size_t size);
-void FreeToActorHeap(void* ptr);
+size_assert(fBase, 0x14);
 
 #define DECLARE_PROC_GLUE_CODE(CLASS)   \
+public:                                 \
     void* operator new(size_t size);    \
     void operator delete(void* p);      \
     static fBase* build();              \

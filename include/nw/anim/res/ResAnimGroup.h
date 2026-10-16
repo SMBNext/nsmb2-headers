@@ -7,9 +7,7 @@
 
 namespace nw {
 
-namespace gfx { class SceneNode; }
-
-namespace anim { 
+namespace anim {
 
 class AnimBlendOp;
 

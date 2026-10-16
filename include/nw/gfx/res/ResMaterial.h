@@ -1,6 +1,7 @@
 #pragma once
 
 #include "nw/gfx/res/ResSceneObject.h"
+#include "nw/gfx/res/ResTextureMapper.h"
 #include "nw/ut/BinaryFileFormat.h"
 #include "nw/ut/ResArray.h"
 #include "nw/ut/ResArrayTypes.h"
@@ -9,6 +10,7 @@
 #include "nw/ut/ResTypes.h"
 #include "nw/ut/ResUtil.h"
 #include "nw/ut/Color.h"
+#include "nw/ut/Flag.h"
 
 #include "sead.h"
 
@@ -100,6 +102,20 @@ struct ResTextureCoordinatorData
     bool m_IsDirty;
     bool m_IsEnabled;
     nw::math::MTX34 m_TextureMatrix;
+};
+
+class ResTextureCoordinator : public nw::ut::ResCommon<ResTextureCoordinatorData>
+{
+public:
+    typedef ResTextureCoordinator SelfType;
+    typedef ResTextureCoordinatorData ResDataType;
+
+    explicit ResTextureCoordinator(const void* p = __null) : nw::ut::ResCommon<ResTextureCoordinatorData>(p) { }
+
+    static const char* GetClassName() { return "ResTextureCoordinator"; }
+
+    bool operator==(const ResTextureCoordinator& rhs) const { return ptr() == rhs.ptr(); }
+    bool operator!=(const ResTextureCoordinator& rhs) const { return ptr() != rhs.ptr(); }
 };
 
 struct ResMaterialData : public ResSceneObjectData
@@ -402,6 +418,11 @@ public:
     bool operator==(const ResMaterial& rhs) const { return ptr() == rhs.ptr(); }
     bool operator!=(const ResMaterial& rhs) const { return ptr() != rhs.ptr(); }
 
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
     ResMaterialColor GetMaterialColor() { return ResMaterialColor(&(ref().m_MaterialColor)); }
     const ResMaterialColor GetMaterialColor() const { return ResMaterialColor(&(ref().m_MaterialColor)); }
 
@@ -409,6 +430,9 @@ public:
     const ResMaterialColorData& GetMaterialColorData() const { return ref().m_MaterialColor; }
 
     s32 GetTextureMappersCount() const { return sizeof(ref().toTextureMappers) / sizeof(nw::ut::Offset); }
+    ResPixelBasedTextureMapper GetTextureMappers(int idx) {
+        return ResPixelBasedTextureMapper(ref().toTextureMappers[idx].to_ptr());
+    }
 
     s32 GetLightSetIndex() const { return static_cast<s32>(ref().m_LightSetIndex); }
     void SetLightSetIndex(s32 value) { ref().m_LightSetIndex = value; }
@@ -454,6 +478,17 @@ public:
 
     u32 GetFragmentOperationHash() const { return static_cast<u32>(ref().m_FragmentOperationHash); }
     void SetFragmentOperationHash(u32 value) { ref().m_FragmentOperationHash = value; }
+
+    ResTextureCoordinatorData& GetTextureCoordinatorsData(int idx) { return ref().m_TextureCoordinators[idx]; }
+    const ResTextureCoordinatorData& GetTextureCoordinatorsData(int idx) const { return ref().m_TextureCoordinators[idx]; }
+    
+    ResTextureCoordinatorData* GetTextureCoordinatorsData() { return ref().m_TextureCoordinators; }
+    const ResTextureCoordinatorData* GetTextureCoordinatorsData() const { return ref().m_TextureCoordinators; }
+    
+    s32 GetTextureCoordinatorsCount() const { return sizeof(ref().m_TextureCoordinators) / sizeof(ResTextureCoordinatorData); }
+    
+    ResTextureCoordinator GetTextureCoordinators(int idx) { return ResTextureCoordinator(&(ref().m_TextureCoordinators[idx])); }
+    const ResTextureCoordinator GetTextureCoordinators(int idx) const { return ResTextureCoordinator(&(ref().m_TextureCoordinators[idx]));}
 };
 typedef nw::ut::ResArrayPatricia<ResMaterial>::type ResMaterialArray;
 typedef nw::ut::ResArrayPatricia<const ResMaterial>::type ResMaterialArrayConst;

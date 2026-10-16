@@ -2,6 +2,10 @@
 
 #include "sead/seadMathCalcCommon.h"
 
+#ifndef SEAD_VECTORCALCCOMMON_H_
+#include "sead/seadVectorCalcCommon.h"
+#endif
+
 namespace sead {
 
 template <typename T>

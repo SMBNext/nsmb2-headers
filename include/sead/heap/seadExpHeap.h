@@ -16,6 +16,8 @@ public:
         cAllocMode_BestFit  = 1,
     };
 
+    static ExpHeap* tryCreate(u32 size, const SafeString& name, Heap* parent = nullptr, HeapDirection direction = HeapDirection_Forward, bool enable_lock = false);
+
     void destroy() override;
     u32 adjust() override;
     void* tryAlloc(size_t size, s32 alignment) override;
