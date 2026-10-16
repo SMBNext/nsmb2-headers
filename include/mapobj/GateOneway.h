@@ -40,7 +40,7 @@ public:
     /* 0x1278 */ u8 _1278;
     /* 0x1279 */ u8 _1279;
     /* 0x127A */ SwingDirection swingDirection;
-    /* 0x127B */ bool fastOpen;
+    /* 0x127B */ u8 _127B;      // padding?
     /* 0x127C */ s32 length;
 
 };
