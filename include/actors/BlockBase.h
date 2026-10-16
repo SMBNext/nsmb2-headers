@@ -144,7 +144,6 @@ public:
     // Handles collision with shells. Returns true on hit.
     bool isHitShell(Shell* shell, ActorBgCollisionCheck* collisionCheck, u8 hitDirection);
 
-    // -- REIMPLEMENTED -- 
     void spawnContents(const Vec3f& position, u32 unk1, u32 unk2, u32 unk3, bool isRouletteBlock);
 
     // Callback for bottom inactive collision.

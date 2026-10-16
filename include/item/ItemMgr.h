@@ -61,7 +61,6 @@ public:
     // Creates an item spawned from the inventory of the player with the given `playerNum`.
     void createItemStock(const Vec3f& position, ItemType itemType, s8 playerNum) const;
     
-    // -- REIMPLEMENTED -- 
     // Creates an item spawned from a block based on the given `spawnInfo` and `blockContents`.
     void createItemBlock(const SpawnInfo& spawnInfo, BlockBase::Contents blockContents) const;
 

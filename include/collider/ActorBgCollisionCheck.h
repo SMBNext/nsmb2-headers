@@ -281,7 +281,7 @@ public:
     // Combines tile `sweepTileCollisionWall()` and actor `sweepActorCollision()` results, picks the most extreme X offset.
     void sweepCollisionWall(Direction direction);
 
-    // --REIMPLEMENTED -- Returns the liquid type at the provided `checkPos`.
+    // Returns the liquid type at the provided `checkPos`.
     // Optionally returns the liquid's Y position via `levelOut`.
     static u8 checkWater(f32* levelOut, const Vec3f& checkPos);
 
