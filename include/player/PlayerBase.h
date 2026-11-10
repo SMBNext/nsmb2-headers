@@ -110,20 +110,20 @@ public:
     virtual bool vf118() = 0;
     virtual void vf11C(u32* unk1, u32 unk2, u32 unk3);
     virtual void vf120();
-    virtual void vf124();
-    virtual void vf128();               // nullsub
-    virtual void vf12C();               // nullsub
-    virtual void vf130(u32 unk);
-    virtual void vf134();
-    virtual void vf138();
-    virtual void vf13C();
-    virtual void vf140();               // nullsub
-    virtual void vf144(u32 unk);        // nullsub
-    virtual void vf148();               // nullsub
-    virtual void vf14C();               // nullsub
-    virtual void vf150();               // nullsub
-    virtual void vf154();               // nullsub
-    virtual void vf158(u32 unk);
+    virtual void vf124(u32 entranceType);
+    virtual void vf128(u32 entranceType);               // nullsub
+    virtual void vf12C(u32 entranceType);               // nullsub
+    virtual void vf130(u32 entranceType);
+    virtual void vf134(u32 entranceType);
+    virtual void vf138(u32 entranceType);
+    virtual void vf13C(u32 entranceType);
+    virtual void vf140(u32 entranceType);               // nullsub
+    virtual void vf144(u32 entranceType);               // nullsub
+    virtual void vf148(u32 entranceType);               // nullsub
+    virtual void vf14C(u32 entranceType);               // nullsub
+    virtual void vf150(u32 entranceType);               // nullsub
+    virtual void vf154(u32 entranceType);               // nullsub
+    virtual void vf158(u32 entranceType);
 
     DECLARE_STATE_VIRTUAL_ID_BASE(PlayerBase, DemoUnk1);
     DECLARE_STATE_VIRTUAL_ID_BASE(PlayerBase, DemoUnk2);

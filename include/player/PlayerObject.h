@@ -66,20 +66,20 @@ public:
     bool vf118() override;
     void vf11C(u32* unk1, u32 unk2, u32 unk3) override;
     void vf120() override;
-    void vf124() override;
-    void vf128() override;
-    void vf12C() override;
-    void vf130(u32 unk) override;
-    void vf134() override;
-    void vf138() override;
-    void vf13C() override;
-    void vf140() override;
-    void vf144(u32 unk) override;
-    void vf148() override;
-    void vf14C() override;
-    void vf150() override;      // nullsub
-    void vf154() override;      // nullsub
-    void vf158(u32 unk) override;
+    void vf124(u32 entranceType) override;
+    void vf128(u32 entranceType) override;
+    void vf12C(u32 entranceType) override;
+    void vf130(u32 entranceType) override;
+    void vf134(u32 entranceType) override;
+    void vf138(u32 entranceType) override;
+    void vf13C(u32 entranceType) override;
+    void vf140(u32 entranceType) override;
+    void vf144(u32 entranceType) override;
+    void vf148(u32 entranceType) override;
+    void vf14C(u32 entranceType) override;
+    void vf150(u32 entranceType) override;      // nullsub
+    void vf154(u32 entranceType) override;      // nullsub
+    void vf158(u32 entranceType) override;
 
     DECLARE_STATE_VIRTUAL_ID_OVERRIDE(PlayerObject, DemoGoal);
     DECLARE_STATE_VIRTUAL_ID_OVERRIDE(PlayerObject, DemoInDoor);
