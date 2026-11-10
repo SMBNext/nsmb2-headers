@@ -5718,6 +5718,9 @@ _ZN14BeansKuriboMgr18SingletonDisposer_D1Ev = 0x002E4800;
 _ZN14BeansKuriboMgr15sStaticDisposerE = 0x005E6240;
 _ZTVN14BeansKuriboMgr18SingletonDisposer_E = 0x005B17F4;
 
+/* BeansKuribo */
+_ZN11BeansKuribo16checkPlayerInputEP10PlayerBase = 0x002151E4;
+
 /* Sanbo */
 _ZTV5Sanbo = 0x005C4DC4;
 _ZN5SanboC1Ev = 0x003BF4F4;
